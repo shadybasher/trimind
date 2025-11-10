@@ -1,36 +1,115 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Trimind V-Next
+
+[![CI Status](https://github.com/USERNAME/trimind-v-next/workflows/CI%20-%20Trimind%20V-Next/badge.svg)](https://github.com/USERNAME/trimind-v-next/actions)
+
+Enterprise-grade Next.js application built with TypeScript, enforcing a "Zero Errors" policy through automated CI/CD.
+
+## Tech Stack
+
+- **Framework:** Next.js 16 (App Router)
+- **Language:** TypeScript (Strict Mode)
+- **Styling:** Tailwind CSS v4
+- **Code Quality:** ESLint + Prettier
+- **CI/CD:** GitHub Actions
+
+## Quality Standards
+
+This project enforces Google-level quality standards:
+
+- ✅ **Zero Errors Policy** - All code must pass linting, formatting, and type checks
+- ✅ **Strict TypeScript** - No `any` types, all variables must be typed
+- ✅ **Consistent Formatting** - Prettier enforces code style automatically
+- ✅ **Security First** - Automated security audits on every commit
+- ✅ **Build Validation** - Every push must build successfully
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+
+- Node.js 20.x or higher
+- npm (comes with Node.js)
+
+### Installation
 
 ```bash
+# Install dependencies
+npm install
+
+# Run development server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) to view the application.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Available Scripts
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+# Development
+npm run dev          # Start development server with hot reload
 
-## Learn More
+# Production
+npm run build        # Create optimized production build
+npm start            # Start production server
 
-To learn more about Next.js, take a look at the following resources:
+# Code Quality
+npm run lint         # Run ESLint
+npm run format       # Format code with Prettier
+npm run format:check # Check if code is formatted correctly
+npm run type-check   # Run TypeScript type checking
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+# Testing
+npm run test         # Run test suite
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Project Structure
 
-## Deploy on Vercel
+```
+trimind-v-next/
+├── app/                 # Next.js App Router pages and layouts
+├── .github/
+│   └── workflows/
+│       └── ci.yml      # CI/CD pipeline configuration
+├── public/             # Static assets
+├── .eslintrc.mjs       # ESLint configuration
+├── .prettierrc         # Prettier configuration
+├── tsconfig.json       # TypeScript configuration
+└── package.json        # Project dependencies and scripts
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## CI/CD Pipeline
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+The GitHub Actions pipeline runs on every push and pull request:
+
+1. **Install Dependencies** - `npm ci` for reproducible builds
+2. **Linting** - ESLint with strict rules
+3. **Format Check** - Prettier validation
+4. **Type Check** - TypeScript compilation without emit
+5. **Security Audit** - Check for critical vulnerabilities
+6. **Build** - Production build verification
+7. **Tests** - Full test suite execution
+
+All steps must pass for the pipeline to succeed.
+
+## Development Guidelines
+
+### Before Committing
+
+Always run the quality checks locally:
+
+```bash
+npm run lint
+npm run format:check
+npm run type-check
+npm run build
+```
+
+### Code Style
+
+- Use functional components with TypeScript
+- Follow naming conventions: PascalCase for components, camelCase for functions
+- Add JSDoc comments for complex functions
+- Avoid `console.log` in production code (use `console.warn` or `console.error` when necessary)
+
+## License
+
+Private project - All rights reserved
