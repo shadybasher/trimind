@@ -58,6 +58,10 @@ jobs:
       - name: Run Tests
         run: npm run test
         continue-on-error: false
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          REDIS_URL: ${{ secrets.REDIS_URL }}
+          BULLMQ_REDIS_URL: ${{ secrets.REDIS_URL }}
 
   status-check:
     name: CI Status
