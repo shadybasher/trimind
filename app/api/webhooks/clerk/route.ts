@@ -65,7 +65,7 @@ export async function POST(req: Request) {
         },
       });
 
-      console.log(`User created in database: ${id}`);
+      console.warn(`User created in database: ${id}`);
     } catch (error) {
       console.error("Error creating user in database:", error);
       return new Response("Error: Failed to create user", {
@@ -89,7 +89,7 @@ export async function POST(req: Request) {
         },
       });
 
-      console.log(`User updated in database: ${id}`);
+      console.warn(`User updated in database: ${id}`);
     } catch (error) {
       console.error("Error updating user in database:", error);
       return new Response("Error: Failed to update user", {
@@ -107,7 +107,7 @@ export async function POST(req: Request) {
         where: { clerkId: id as string },
       });
 
-      console.log(`User deleted from database: ${id}`);
+      console.warn(`User deleted from database: ${id}`);
     } catch (error) {
       console.error("Error deleting user from database:", error);
       return new Response("Error: Failed to delete user", {
