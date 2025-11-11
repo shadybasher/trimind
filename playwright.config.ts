@@ -18,8 +18,22 @@ export default defineConfig({
 
   projects: [
     {
-      name: "chromium",
-      use: { ...devices["Desktop Chrome"] },
+      name: "global setup",
+      testMatch: /global\.setup\.ts/,
+    },
+    {
+      name: "unauthenticated tests",
+      testMatch: /.*auth-redirect\.spec\.ts/,
+      dependencies: ["global setup"],
+    },
+    {
+      name: "authenticated tests",
+      testMatch: /.*auth-signup-flow\.spec\.ts/,
+      use: {
+        ...devices["Desktop Chrome"],
+        storageState: "playwright/.clerk/user.json",
+      },
+      dependencies: ["global setup"],
     },
   ],
 
