@@ -1,0 +1,67 @@
+// Trimind V-Next Database Schema
+// Enterprise-grade schema with full audit trails and relationships
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// User model - synced from Clerk via webhook
+model User {
+  id        String   @id @default(cuid())
+  clerkId   String   @unique // Clerk user ID for synchronization
+  email     String   @unique
+  firstName String?
+  lastName  String?
+  imageUrl  String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  sessions Session[]
+  messages Message[]
+
+  @@index([clerkId])
+  @@index([email])
+  @@map("users")
+}
+
+// Session model - conversation sessions
+model Session {
+  id        String   @id @default(cuid())
+  userId    String
+  title     String   @default("New Conversation")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  messages Message[]
+
+  @@index([userId])
+  @@index([createdAt])
+  @@map("sessions")
+}
+
+// Message model - individual messages in sessions
+model Message {
+  id        String   @id @default(cuid())
+  sessionId String
+  userId    String
+  role      String // "user" or "assistant"
+  content   String   @db.Text
+  createdAt DateTime @default(now())
+
+  // Relations
+  session Session @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([sessionId])
+  @@index([userId])
+  @@index([createdAt])
+  @@map("messages")
+}

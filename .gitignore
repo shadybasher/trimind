@@ -72,3 +72,5 @@ Desktop.ini
 *.tmp
 *.temp
 .cache
+
+/app/generated/prisma
