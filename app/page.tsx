@@ -1,15 +1,8 @@
-import { auth } from "@clerk/nextjs/server";
-import { redirect } from "next/navigation";
 import Link from "next/link";
 
-export default async function Home() {
-  const { userId } = await auth();
-
-  // If user is authenticated, redirect to dashboard
-  if (userId) {
-    redirect("/dashboard");
-  }
-
+export default function Home() {
+  // Public home page - no authentication checks
+  // Middleware handles route protection at server level
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-br from-slate-50 to-slate-100">
       <main className="text-center">

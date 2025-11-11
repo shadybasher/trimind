@@ -37,16 +37,8 @@ export default defineConfig({
     },
   ],
 
-  // WebServer configuration disabled in CI - server started manually
-  // In local dev, start server with: npm run dev
-  ...(process.env.CI
-    ? {}
-    : {
-        webServer: {
-          command: "npm run dev",
-          url: "http://localhost:3000",
-          reuseExistingServer: true,
-          timeout: 120000,
-        },
-      }),
+  // WebServer configuration removed - tests expect server to be running manually
+  // Local: Use 'npm run test:e2e:local' which builds and starts production server
+  // CI: Server is started manually in workflow (npm start &)
+  // This ensures both local and CI test against production build
 });
