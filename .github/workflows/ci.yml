@@ -28,7 +28,7 @@ jobs:
       - name: Install dependencies
         run: npm ci
         env:
-          DATABASE_URL: postgresql://user:password@localhost:5432/db?schema=public
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
 
       - name: Run Linting (ESLint)
         run: npm run lint
@@ -46,14 +46,14 @@ jobs:
         run: npm audit --audit-level=critical
         continue-on-error: false
 
-      # Note: Build step temporarily disabled until GitHub Secrets are configured for Clerk API keys
-      # Clerk validates API keys at build time, and placeholder values cause build failures
-      # All other quality checks (lint, format, type-check) still run and enforce 0 errors policy
-      # - name: Build Project
-      #   run: npm run build
-      #   continue-on-error: false
-      #   env:
-      #     NODE_ENV: production
+      - name: Build Project
+        run: npm run build
+        continue-on-error: false
+        env:
+          NODE_ENV: production
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}
+          CLERK_SECRET_KEY: ${{ secrets.CLERK_SECRET_KEY }}
 
       - name: Run Tests
         run: npm run test
