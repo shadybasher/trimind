@@ -23,13 +23,16 @@
   "dependencies": {
     "@clerk/nextjs": "^6.34.5",
     "@prisma/client": "^6.19.0",
+    "@tanstack/react-query": "^5.90.7",
     "bullmq": "^5.63.0",
     "dotenv": "^17.2.3",
     "ioredis": "^5.8.2",
     "next": "16.0.1",
     "react": "19.2.0",
     "react-dom": "19.2.0",
-    "svix": "^1.81.0"
+    "svix": "^1.81.0",
+    "zod": "^4.1.12",
+    "zustand": "^5.0.8"
   },
   "devDependencies": {
     "@clerk/testing": "^1.13.14",
