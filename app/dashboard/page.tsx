@@ -4,7 +4,8 @@ import { redirect } from "next/navigation";
 import { ManagerConsole } from "@/components/ManagerConsole";
 import { ChatPane } from "@/components/ChatPane";
 import { ThemeToggle } from "@/components/ThemeToggle";
-import { getUserByClerkId } from "@/lib/user";
+import { AccountSetupLoader } from "@/components/AccountSetupLoader";
+import { getUserByClerkIdSafe } from "@/lib/user";
 import { getOrCreateSession } from "@/lib/session";
 
 export const dynamic = "force-dynamic";
@@ -16,8 +17,16 @@ export default async function DashboardPage() {
     redirect("/sign-in");
   }
 
-  // Get user's database ID and session
-  const dbUserId = await getUserByClerkId(userId);
+  // Get user's database ID (safe - handles race condition with webhook)
+  const dbUserId = await getUserByClerkIdSafe(userId);
+
+  // If user doesn't exist yet, show loading UI while polling
+  // This handles the race condition between Clerk auth and webhook completion
+  if (!dbUserId) {
+    return <AccountSetupLoader clerkId={userId} />;
+  }
+
+  // User exists - proceed with normal dashboard
   const sessionId = await getOrCreateSession(dbUserId);
 
   return (
