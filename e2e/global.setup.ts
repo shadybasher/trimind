@@ -26,7 +26,7 @@ setup("authenticate test user and save state", async ({ page }) => {
 
   // Verify authentication by navigating to protected route
   await page.goto("/dashboard");
-  await page.waitForSelector("text=Welcome", { timeout: 10000 });
+  await page.waitForSelector("text=Trimind V-Next", { timeout: 10000 });
 
   // Save authenticated state for reuse in tests
   await page.context().storageState({ path: authFile });
