@@ -1,7 +1,7 @@
 import { create } from "zustand";
 
 // Model states for multi-model conversation
-type ModelState = "active" | "observe" | "disabled";
+type ModelState = "active" | "silent" | "observe";
 
 interface ModelStates {
   gpt: ModelState;
@@ -39,8 +39,8 @@ const initialState = {
   isSidebarOpen: true,
   modelStates: {
     gpt: "active" as ModelState,
-    gemini: "observe" as ModelState,
-    claude: "disabled" as ModelState,
+    gemini: "active" as ModelState,
+    claude: "active" as ModelState,
   },
   theme: "system" as const,
 };
