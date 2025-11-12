@@ -23,7 +23,9 @@ def test_intent_router_classifies_greeting(client, auth_headers):
         )
     ]
 
-    with patch("app.routers.intent_router.litellm.acompletion", return_value=mock_response):
+    with patch(
+        "app.routers.intent_router.litellm.acompletion", return_value=mock_response
+    ):
         response = client.post(
             "/api/v1/intent-router-resilient",
             json={"text": "Hello, how are you today?"},
@@ -51,7 +53,9 @@ def test_intent_router_classifies_question(client, auth_headers):
         )
     ]
 
-    with patch("app.routers.intent_router.litellm.acompletion", return_value=mock_response):
+    with patch(
+        "app.routers.intent_router.litellm.acompletion", return_value=mock_response
+    ):
         response = client.post(
             "/api/v1/intent-router-resilient",
             json={"text": "What is the capital of France?"},
