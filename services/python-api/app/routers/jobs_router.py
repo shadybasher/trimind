@@ -13,7 +13,9 @@ class AIJobRequest(BaseModel):
     sessionId: str = Field(..., description="Session ID")
     userId: str = Field(..., description="User ID")
     messageId: str = Field(..., description="Message ID")
-    message: str = Field(..., min_length=1, max_length=10000, description="User message")
+    message: str = Field(
+        ..., min_length=1, max_length=10000, description="User message"
+    )
     timestamp: str = Field(..., description="Message timestamp (ISO format)")
 
 

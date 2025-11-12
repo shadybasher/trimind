@@ -14,7 +14,9 @@ router = APIRouter()
 class IntentRequest(BaseModel):
     """Request model for intent classification."""
 
-    text: str = Field(..., min_length=1, max_length=10000, description="Text to classify")
+    text: str = Field(
+        ..., min_length=1, max_length=10000, description="Text to classify"
+    )
 
 
 class IntentResponse(BaseModel):

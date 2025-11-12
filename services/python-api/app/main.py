@@ -63,5 +63,7 @@ async def health():
 
 # Include routers
 app.include_router(intent_router.router, prefix=settings.api_v1_prefix, tags=["intent"])
-app.include_router(compression_router.router, prefix=settings.api_v1_prefix, tags=["compression"])
+app.include_router(
+    compression_router.router, prefix=settings.api_v1_prefix, tags=["compression"]
+)
 app.include_router(jobs_router.router, prefix=settings.api_v1_prefix, tags=["jobs"])

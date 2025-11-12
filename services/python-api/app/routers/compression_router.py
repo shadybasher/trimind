@@ -11,7 +11,9 @@ router = APIRouter()
 class CompressionRequest(BaseModel):
     """Request model for prompt compression."""
 
-    prompt: str = Field(..., min_length=1, max_length=50000, description="Prompt to compress")
+    prompt: str = Field(
+        ..., min_length=1, max_length=50000, description="Prompt to compress"
+    )
     rate: float = Field(
         default=0.5,
         ge=0.1,
@@ -30,7 +32,9 @@ class CompressionResponse(BaseModel):
     compressed_prompt: str = Field(..., description="Compressed prompt text")
     original_length: int = Field(..., description="Original prompt token count")
     compressed_length: int = Field(..., description="Compressed prompt token count")
-    compression_ratio: float = Field(..., description="Actual compression ratio achieved")
+    compression_ratio: float = Field(
+        ..., description="Actual compression ratio achieved"
+    )
     savings_tokens: int = Field(..., description="Number of tokens saved")
 
 

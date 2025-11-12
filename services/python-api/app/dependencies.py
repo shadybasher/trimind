@@ -11,7 +11,7 @@ security = HTTPBearer()
 
 
 async def verify_shared_secret(
-    credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)]
+    credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)],
 ) -> None:
     """
     Verify the shared secret using timing-attack-resistant comparison.
