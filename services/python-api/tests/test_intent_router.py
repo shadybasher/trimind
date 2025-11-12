@@ -1,6 +1,5 @@
 """Tests for Intent Router with Circuit Breaker."""
 
-import pytest
 from unittest.mock import patch, AsyncMock
 
 
