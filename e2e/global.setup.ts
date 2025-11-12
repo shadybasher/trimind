@@ -44,7 +44,8 @@ setup("authenticate test user and save state", async ({ page }) => {
         create: {
           clerkId: clerkUserId,
           email: process.env.E2E_CLERK_USER_USERNAME!,
-          name: "E2E Test User",
+          firstName: "E2E",
+          lastName: "Test User",
         },
       });
     }
