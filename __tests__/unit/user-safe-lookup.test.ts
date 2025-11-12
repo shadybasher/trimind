@@ -1,5 +1,3 @@
-import { PrismaClient } from "@prisma/client";
-
 // Create a mock findUnique function that we can control
 const mockFindUnique = jest.fn();
 
@@ -124,9 +122,7 @@ describe("getUserByClerkIdSafe - Unit Tests", () => {
 
       mockFindUnique.mockRejectedValue(dbError);
 
-      await expect(getUserByClerkIdSafe(testClerkId)).rejects.toThrow(
-        "Database connection failed",
-      );
+      await expect(getUserByClerkIdSafe(testClerkId)).rejects.toThrow("Database connection failed");
     });
   });
 
@@ -142,7 +138,7 @@ describe("getUserByClerkIdSafe - Unit Tests", () => {
 
       // Original version throws
       await expect(getUserByClerkId(testClerkId)).rejects.toThrow(
-        `User not found for Clerk ID: ${testClerkId}`,
+        `User not found for Clerk ID: ${testClerkId}`
       );
     });
 
