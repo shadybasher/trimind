@@ -1,6 +1,7 @@
 import { clerk, clerkSetup } from "@clerk/testing/playwright";
 import { test as setup } from "@playwright/test";
 import path from "path";
+import { PrismaClient } from "@prisma/client";
 
 setup.describe.configure({ mode: "serial" });
 
@@ -24,22 +25,38 @@ setup("authenticate test user and save state", async ({ page }) => {
     },
   });
 
+  // E2E-specific: Ensure user exists in DB (bypassing webhook delay)
+  // In production, the Clerk webhook handles this. For E2E, we create it manually.
+  const prisma = new PrismaClient();
+  try {
+    // Get Clerk user ID from the page context
+    const clerkUserId = await page.evaluate(() => {
+      // Access Clerk's client-side state
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      return (window as any).Clerk?.user?.id;
+    });
+
+    if (clerkUserId) {
+      // Create or update user in database (idempotent)
+      await prisma.user.upsert({
+        where: { clerkId: clerkUserId },
+        update: {}, // No updates needed if exists
+        create: {
+          clerkId: clerkUserId,
+          email: process.env.E2E_CLERK_USER_USERNAME!,
+          name: "E2E Test User",
+        },
+      });
+    }
+  } finally {
+    await prisma.$disconnect();
+  }
+
   // Verify authentication by navigating to protected route
   await page.goto("/dashboard");
 
-  // Handle race condition: wait for either loading state OR dashboard
-  // If we see "Preparing Your Account", wait for it to resolve
-  const loadingVisible = await page
-    .locator("text=Preparing Your Account")
-    .isVisible()
-    .catch(() => false);
-
-  if (loadingVisible) {
-    // Race condition detected - wait for loading to finish (max 30s as per useUserSetup)
-    await page.waitForSelector("text=Preparing Your Account", { state: "hidden", timeout: 35000 });
-  }
-
   // Now wait for the dashboard to be fully loaded
+  // With the DB user created above, there should be no loading state
   await page.waitForSelector("text=Trimind V-Next", { timeout: 10000 });
 
   // Save authenticated state for reuse in tests
