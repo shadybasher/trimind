@@ -2,6 +2,7 @@ import { auth } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { PrismaClient } from "@prisma/client";
+import { aiTasksQueue, AITaskJob } from "@/lib/queue";
 
 const prisma = new PrismaClient();
 
@@ -64,15 +65,28 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    // 6. Return stub response (AI integration will be added later)
+    // 6. Add AI processing job to BullMQ queue
+    const jobData: AITaskJob = {
+      sessionId,
+      userId: user.id,
+      messageId: savedMessage.id,
+      message: message,
+      timestamp: savedMessage.createdAt.toISOString(),
+    };
+
+    await aiTasksQueue.add("process-ai-task", jobData, {
+      jobId: `${savedMessage.id}-${Date.now()}`, // Unique job ID
+    });
+
+    // 7. Return 202 Accepted (job queued for async processing)
     return NextResponse.json(
       {
         success: true,
-        message: "Received",
+        status: "queued",
         messageId: savedMessage.id,
         timestamp: savedMessage.createdAt,
       },
-      { status: 200 }
+      { status: 202 }
     );
   } catch (error) {
     console.error("[/api/chat] Error:", error);

@@ -1,0 +1,150 @@
+# Docker Compose for Trimind V-Next
+# 5-Service Architecture: PostgreSQL + Redis + Next.js + BullMQ Proxy + Python API
+
+version: "3.9"
+
+services:
+  # ========================================
+  # PostgreSQL Database
+  # ========================================
+  postgres:
+    image: postgres:16-alpine
+    container_name: trimind-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-trimind}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-trimind_password}
+      POSTGRES_DB: ${POSTGRES_DB:-trimind}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-trimind}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - trimind-network
+
+  # ========================================
+  # Redis (BullMQ Queue)
+  # ========================================
+  redis:
+    image: redis:7-alpine
+    container_name: trimind-redis
+    restart: unless-stopped
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - trimind-network
+
+  # ========================================
+  # Python API Service
+  # ========================================
+  python-api:
+    build:
+      context: ./services/python-api
+      dockerfile: Dockerfile
+    container_name: trimind-python-api
+    restart: unless-stopped
+    environment:
+      - SHARED_SECRET=${SHARED_SECRET}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - DEBUG=${DEBUG:-false}
+    ports:
+      - "${PYTHON_API_PORT:-8000}:8000"
+    depends_on:
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - trimind-network
+
+  # ========================================
+  # BullMQ Proxy Worker
+  # ========================================
+  bullmq-proxy:
+    build:
+      context: ./services/bullmq-proxy
+      dockerfile: Dockerfile
+    container_name: trimind-bullmq-proxy
+    restart: unless-stopped
+    environment:
+      - REDIS_URL=redis://redis:6379
+      - PYTHON_API_URL=http://python-api:8000
+      - SHARED_SECRET=${SHARED_SECRET}
+    depends_on:
+      redis:
+        condition: service_healthy
+      python-api:
+        condition: service_healthy
+    networks:
+      - trimind-network
+
+  # ========================================
+  # Next.js Application
+  # ========================================
+  nextjs:
+    build:
+      context: .
+      dockerfile: Dockerfile.nextjs
+    container_name: trimind-nextjs
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-trimind}:${POSTGRES_PASSWORD:-trimind_password}@postgres:5432/${POSTGRES_DB:-trimind}
+      - REDIS_URL=redis://redis:6379
+      - CLERK_SECRET_KEY=${CLERK_SECRET_KEY}
+      - NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=${NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}
+      - NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in
+      - NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up
+      - CLERK_WEBHOOK_SECRET=${CLERK_WEBHOOK_SECRET}
+      - SHARED_SECRET=${SHARED_SECRET}
+    ports:
+      - "${NEXTJS_PORT:-3000}:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      python-api:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    networks:
+      - trimind-network
+
+# ========================================
+# Volumes
+# ========================================
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+
+# ========================================
+# Networks
+# ========================================
+networks:
+  trimind-network:
+    driver: bridge

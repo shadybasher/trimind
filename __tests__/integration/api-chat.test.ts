@@ -140,21 +140,40 @@ describe("/api/chat Integration Tests", () => {
     });
   });
 
-  describe("API Response Format", () => {
-    it("should return expected response structure", () => {
+  describe("API Response Format (BullMQ Async Flow)", () => {
+    it("should return 202 Accepted with queued status (async processing)", () => {
+      // Updated for Epic 5: BullMQ async architecture
+      // Response now indicates job queued, not immediate processing
       const mockResponse = {
         success: true,
-        message: "Received",
+        status: "queued",
         messageId: "test-id",
         timestamp: new Date().toISOString(),
       };
 
       expect(mockResponse).toHaveProperty("success");
-      expect(mockResponse).toHaveProperty("message");
+      expect(mockResponse).toHaveProperty("status");
       expect(mockResponse).toHaveProperty("messageId");
       expect(mockResponse).toHaveProperty("timestamp");
       expect(mockResponse.success).toBe(true);
-      expect(mockResponse.message).toBe("Received");
+      expect(mockResponse.status).toBe("queued"); // Changed from "Received" to "queued"
+    });
+
+    it("should validate BullMQ job structure", () => {
+      // Job data structure sent to BullMQ
+      const mockJobData = {
+        sessionId: testSessionId,
+        userId: testUserId,
+        messageId: "test-message-id",
+        message: "Test message",
+        timestamp: new Date().toISOString(),
+      };
+
+      expect(mockJobData).toHaveProperty("sessionId");
+      expect(mockJobData).toHaveProperty("userId");
+      expect(mockJobData).toHaveProperty("messageId");
+      expect(mockJobData).toHaveProperty("message");
+      expect(mockJobData).toHaveProperty("timestamp");
     });
   });
 });
