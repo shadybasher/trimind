@@ -24,7 +24,13 @@ test.describe("Authenticated User Flows", () => {
     await expect(page).toHaveURL(/\/dashboard/);
 
     // Verify dashboard content is visible
-    await expect(page.locator("text=Welcome")).toBeVisible({ timeout: 10000 });
+    // Check for header title (always present in dashboard)
+    await expect(page.locator("text=Trimind V-Next")).toBeVisible({ timeout: 10000 });
+
+    // Verify key dashboard components are loaded
+    await expect(page.locator('textarea[placeholder*="Type your message"]')).toBeVisible({
+      timeout: 10000,
+    });
   });
 
   test("should verify authenticated user exists in database", async ({ page }) => {
