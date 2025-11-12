@@ -1,8 +1,18 @@
 """Pytest configuration and fixtures for Python API tests."""
 
+import os
 import pytest
 from fastapi.testclient import TestClient
-from app.main import app
+
+
+# Set test environment variables BEFORE importing app
+# This ensures Settings loads test values instead of empty strings
+os.environ["SHARED_SECRET"] = "test-secret-for-testing-only"
+os.environ["OPENAI_API_KEY"] = "test-openai-key"
+os.environ["ANTHROPIC_API_KEY"] = "test-anthropic-key"
+
+# Now import app after env vars are set
+from app.main import app  # noqa: E402
 
 
 @pytest.fixture
