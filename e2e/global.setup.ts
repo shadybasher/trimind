@@ -26,6 +26,20 @@ setup("authenticate test user and save state", async ({ page }) => {
 
   // Verify authentication by navigating to protected route
   await page.goto("/dashboard");
+
+  // Handle race condition: wait for either loading state OR dashboard
+  // If we see "Preparing Your Account", wait for it to resolve
+  const loadingVisible = await page
+    .locator("text=Preparing Your Account")
+    .isVisible()
+    .catch(() => false);
+
+  if (loadingVisible) {
+    // Race condition detected - wait for loading to finish (max 30s as per useUserSetup)
+    await page.waitForSelector("text=Preparing Your Account", { state: "hidden", timeout: 35000 });
+  }
+
+  // Now wait for the dashboard to be fully loaded
   await page.waitForSelector("text=Trimind V-Next", { timeout: 10000 });
 
   // Save authenticated state for reuse in tests
