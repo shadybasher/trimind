@@ -38,4 +38,6 @@ class Settings(BaseSettings):
 
 
 # Global settings instance
-settings = Settings()
+# Note: Pydantic BaseSettings automatically loads values from environment variables
+# mypy doesn't understand this magic, so we suppress the call-arg error
+settings = Settings()  # type: ignore[call-arg]
