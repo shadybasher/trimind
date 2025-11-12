@@ -1,7 +1,5 @@
 """Tests for LLMLingua-2 compression endpoint."""
 
-import pytest
-
 
 def test_compress_endpoint_requires_auth(client):
     """Test that compression endpoint requires authentication."""

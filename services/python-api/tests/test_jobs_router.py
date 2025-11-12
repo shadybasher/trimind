@@ -1,7 +1,5 @@
 """Tests for jobs router (BullMQ webhook consumer)."""
 
-import pytest
-
 
 def test_process_ai_job_requires_auth(client):
     """Test that job processing endpoint requires authentication."""

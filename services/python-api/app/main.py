@@ -5,6 +5,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.config import settings
 from app.models import LLMLinguaModel
+from app.routers import intent_router, compression_router, jobs_router
 
 
 @asynccontextmanager
@@ -60,9 +61,7 @@ async def health():
     }
 
 
-# Import and include routers
-from app.routers import intent_router, compression_router, jobs_router
-
+# Include routers
 app.include_router(intent_router.router, prefix=settings.api_v1_prefix, tags=["intent"])
 app.include_router(compression_router.router, prefix=settings.api_v1_prefix, tags=["compression"])
 app.include_router(jobs_router.router, prefix=settings.api_v1_prefix, tags=["jobs"])

@@ -1,6 +1,6 @@
 """Jobs Router for processing AI tasks from BullMQ Proxy."""
 
-from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, status
+from fastapi import APIRouter, BackgroundTasks, Depends
 from pydantic import BaseModel, Field
 from app.dependencies import verify_shared_secret
 
