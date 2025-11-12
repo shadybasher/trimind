@@ -6,7 +6,7 @@ pydantic-settings==2.7.1
 
 # AI & LLM
 llmlingua==0.2.2
-litellm==1.58.5
+litellm==1.58.4
 
 # Resilience
 circuitbreaker==2.0.0
