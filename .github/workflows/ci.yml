@@ -178,7 +178,7 @@ jobs:
           CLERK_SECRET_KEY: ${{ secrets.CLERK_SECRET_KEY }}
 
       - name: Start Next.js Server
-        run: npm start &
+        run: nohup npm start > nextjs.log 2>&1 &
         env:
           NODE_ENV: production
           DATABASE_URL: postgresql://trimind:trimind_ci_password@localhost:5432/trimind
@@ -228,6 +228,16 @@ jobs:
           CLERK_SECRET_KEY: ${{ secrets.CLERK_SECRET_KEY }}
           E2E_CLERK_USER_USERNAME: ${{ secrets.E2E_CLERK_USER_USERNAME }}
           E2E_CLERK_USER_PASSWORD: ${{ secrets.E2E_CLERK_USER_PASSWORD }}
+
+      - name: Show Next.js Logs (on failure)
+        if: failure()
+        run: |
+          echo "=== Next.js Logs ==="
+          if [ -f nextjs.log ]; then
+            tail -100 nextjs.log
+          else
+            echo "No Next.js log file found"
+          fi
 
       - name: Show Docker Compose Logs (on failure)
         if: failure()
