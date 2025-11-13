@@ -33,6 +33,12 @@ COPY --from=builder /root/.local /root/.local
 # Ensure PATH includes user-installed packages
 ENV PATH=/root/.local/bin:$PATH
 
+# Copy Prisma schema from project root (2 levels up)
+COPY ../../prisma ./prisma
+
+# Generate Prisma Client for Python
+RUN prisma generate
+
 # Copy application code
 COPY app ./app
 

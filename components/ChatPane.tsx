@@ -166,6 +166,7 @@ export function ChatPane({ providerId, sessionId }: ChatPaneProps) {
             {paneMessages.map((message) => (
               <div
                 key={message.id}
+                data-role={message.role}
                 className={`rounded-lg p-3 ${
                   message.role === "user"
                     ? "bg-blue-50 dark:bg-blue-900/20"

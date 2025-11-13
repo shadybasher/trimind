@@ -44,6 +44,7 @@ export function useGetMessages(sessionId: string) {
       return response.json();
     },
     enabled: !!sessionId,
+    refetchInterval: 2000, // Poll every 2 seconds for new AI responses
   });
 }
 
