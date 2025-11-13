@@ -86,16 +86,16 @@ async def process_ai_job_background(job_data: AIJobRequest):
             prisma = Prisma()
             await prisma.connect()
             try:
-                await prisma.message.create(
+                # Create AI message with auto-generated CUID (do NOT use job_data.messageId - that's the user message ID!)
+                ai_message_record = await prisma.message.create(
                     data={
-                        "id": job_data.messageId,  # Use provided messageId
                         "sessionId": job_data.sessionId,
                         "userId": job_data.userId,
                         "role": "assistant",
                         "content": ai_message,
                     }
                 )
-                print(f"  ✓ Saved to database: {job_data.messageId}")
+                print(f"  ✓ Saved to database: AI message {ai_message_record.id} (for user message {job_data.messageId})")
             finally:
                 await prisma.disconnect()
         except ImportError as e:
@@ -157,6 +157,8 @@ async def process_ai_job_webhook(
     """
     # Generate unique job ID for tracking
     job_id = f"job-{job_data.messageId}-{hash(job_data.timestamp)}"
+
+    print(f"[Python Worker] Webhook received for Job {job_id} (message {job_data.messageId})")
 
     # Add AI processing to background tasks (runs after response sent)
     background_tasks.add_task(process_ai_job_background, job_data)

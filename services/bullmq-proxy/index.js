@@ -50,6 +50,7 @@ async function processAITask(job) {
 
   try {
     // Forward job to Python API
+    console.log(`[Node Worker] Job ${job.id} - Calling Python API...`);
     const response = await fetch(`${PYTHON_API_URL}/api/v1/jobs/process-ai-job`, {
       method: "POST",
       headers: {

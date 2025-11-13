@@ -72,9 +72,12 @@ export async function POST(req: NextRequest) {
       timestamp: savedMessage.createdAt.toISOString(),
     };
 
+    const jobId = `${savedMessage.id}-${Date.now()}`;
     await aiTasksQueue.add("process-ai-task", jobData, {
-      jobId: `${savedMessage.id}-${Date.now()}`, // Unique job ID
+      jobId, // Unique job ID
     });
+
+    console.log(`[Node Producer] Job ${jobId} added to queue for message ${savedMessage.id}`);
 
     // 7. Return 202 Accepted (job queued for async processing)
     return NextResponse.json(
