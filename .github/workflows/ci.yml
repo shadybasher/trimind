@@ -160,16 +160,37 @@ jobs:
           NODE_ENV=production
           EOF
 
-      - name: Start Full Stack (Docker Compose)
-        run: docker compose -f docker-compose.yml up -d --build
+      - name: Start Backend Services (Docker Compose)
+        run: docker compose -f docker-compose.ci.yml up -d --build
         env:
           SHARED_SECRET: ${{ secrets.SHARED_SECRET }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
-          CLERK_SECRET_KEY: ${{ secrets.CLERK_SECRET_KEY }}
+
+      - name: Build Next.js Production
+        run: npm run build
+        env:
+          NODE_ENV: production
+          DATABASE_URL: postgresql://trimind:trimind_ci_password@localhost:5432/trimind
+          REDIS_URL: redis://localhost:6379
           NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}
-          CLERK_WEBHOOK_SECRET: ${{ secrets.CLERK_WEBHOOK_SECRET }}
+          CLERK_SECRET_KEY: ${{ secrets.CLERK_SECRET_KEY }}
+
+      - name: Start Next.js Server
+        run: npm start &
+        env:
+          NODE_ENV: production
+          DATABASE_URL: postgresql://trimind:trimind_ci_password@localhost:5432/trimind
+          REDIS_URL: redis://localhost:6379
+          BULLMQ_REDIS_URL: redis://localhost:6379
+          SHARED_SECRET: ${{ secrets.SHARED_SECRET }}
+          NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}
+          CLERK_SECRET_KEY: ${{ secrets.CLERK_SECRET_KEY }}
+          NEXT_PUBLIC_CLERK_SIGN_IN_URL: /sign-in
+          NEXT_PUBLIC_CLERK_SIGN_UP_URL: /sign-up
+          NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL: /dashboard
+          NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL: /dashboard
 
       - name: Wait for All Services (Health Checks)
         run: |
@@ -210,7 +231,7 @@ jobs:
 
       - name: Show Docker Compose Logs (on failure)
         if: failure()
-        run: docker compose logs --tail=100
+        run: docker compose -f docker-compose.ci.yml logs --tail=100
 
       - name: Upload Playwright Report
         uses: actions/upload-artifact@v4
@@ -222,7 +243,7 @@ jobs:
 
       - name: Cleanup Docker Compose
         if: always()
-        run: docker compose down -v
+        run: docker compose -f docker-compose.ci.yml down -v
 
   status-check:
     name: CI Status

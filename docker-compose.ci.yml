@@ -1,0 +1,81 @@
+# Docker Compose for CI E2E Tests
+# Only backend services - Next.js runs natively in CI
+version: "3.9"
+
+services:
+  # ========================================
+  # PostgreSQL Database
+  # ========================================
+  postgres:
+    image: postgres:16-alpine
+    container_name: trimind-postgres-ci
+    environment:
+      POSTGRES_USER: trimind
+      POSTGRES_PASSWORD: trimind_ci_password
+      POSTGRES_DB: trimind
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U trimind"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  # ========================================
+  # Redis (BullMQ Queue)
+  # ========================================
+  redis:
+    image: redis:7-alpine
+    container_name: trimind-redis-ci
+    ports:
+      - "6379:6379"
+    command: redis-server --appendonly yes
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  # ========================================
+  # Python API Service
+  # ========================================
+  python-api:
+    build:
+      context: ./services/python-api
+      dockerfile: Dockerfile
+    container_name: trimind-python-api-ci
+    environment:
+      - SHARED_SECRET=${SHARED_SECRET}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - GOOGLE_API_KEY=${GOOGLE_API_KEY}
+      - DEBUG=false
+    ports:
+      - "8000:8000"
+    depends_on:
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+
+  # ========================================
+  # BullMQ Proxy Worker
+  # ========================================
+  bullmq-proxy:
+    build:
+      context: ./services/bullmq-proxy
+      dockerfile: Dockerfile
+    container_name: trimind-bullmq-proxy-ci
+    environment:
+      - REDIS_URL=redis://redis:6379
+      - PYTHON_API_URL=http://python-api:8000
+      - SHARED_SECRET=${SHARED_SECRET}
+    depends_on:
+      redis:
+        condition: service_healthy
+      python-api:
+        condition: service_healthy
