@@ -30,7 +30,7 @@ class Settings(BaseSettings):
     circuit_breaker_timeout: int = 60
 
     model_config = SettingsConfigDict(
-        env_file=".env",
+        env_file=(".env.local", ".env"),  # Try .env.local first, then .env
         env_file_encoding="utf-8",
         case_sensitive=False,
         extra="ignore",

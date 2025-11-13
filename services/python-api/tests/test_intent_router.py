@@ -1,6 +1,6 @@
 """Tests for Intent Router with Circuit Breaker."""
 
-from unittest.mock import patch, AsyncMock
+import pytest
 
 
 def test_intent_router_requires_auth(client):
@@ -11,26 +11,14 @@ def test_intent_router_requires_auth(client):
     assert response.status_code == 403
 
 
+@pytest.mark.vcr()
 def test_intent_router_classifies_greeting(client, auth_headers):
-    """Test intent classification for greeting message with mocked LLM."""
-    # Mock litellm.acompletion to return fake intent response
-    mock_response = AsyncMock()
-    mock_response.choices = [
-        AsyncMock(
-            message=AsyncMock(
-                content='{"intent": "greeting", "confidence": 0.95, "target_model": "gpt-4o"}'
-            )
-        )
-    ]
-
-    with patch(
-        "app.routers.intent_router.litellm.acompletion", return_value=mock_response
-    ):
-        response = client.post(
-            "/api/v1/intent-router-resilient",
-            json={"text": "Hello, how are you today?"},
-            headers=auth_headers,
-        )
+    """Test intent classification for greeting message with real LLM via VCR.py."""
+    response = client.post(
+        "/api/v1/intent-router-resilient",
+        json={"text": "Hello, how are you today?"},
+        headers=auth_headers,
+    )
 
     assert response.status_code == 200
     data = response.json()
@@ -41,26 +29,14 @@ def test_intent_router_classifies_greeting(client, auth_headers):
     assert 0.0 <= data["confidence"] <= 1.0
 
 
+@pytest.mark.vcr()
 def test_intent_router_classifies_question(client, auth_headers):
-    """Test intent classification for question message with mocked LLM."""
-    # Mock litellm.acompletion to return fake intent response
-    mock_response = AsyncMock()
-    mock_response.choices = [
-        AsyncMock(
-            message=AsyncMock(
-                content='{"intent": "question", "confidence": 0.92, "target_model": "gpt-4o"}'
-            )
-        )
-    ]
-
-    with patch(
-        "app.routers.intent_router.litellm.acompletion", return_value=mock_response
-    ):
-        response = client.post(
-            "/api/v1/intent-router-resilient",
-            json={"text": "What is the capital of France?"},
-            headers=auth_headers,
-        )
+    """Test intent classification for question message with real LLM via VCR.py."""
+    response = client.post(
+        "/api/v1/intent-router-resilient",
+        json={"text": "What is the capital of France?"},
+        headers=auth_headers,
+    )
 
     assert response.status_code == 200
     data = response.json()

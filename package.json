@@ -18,7 +18,8 @@
     "test:e2e:local": "npm run build && start /B npm start && npx wait-on http://localhost:3000 --timeout 60000 && playwright test",
     "test:all": "npm run test:unit && npm run test:integration && npm run test:e2e",
     "type-check": "tsc --noEmit",
-    "postinstall": "prisma generate"
+    "postinstall": "prisma generate",
+    "test:e2e:full": "npm run build && node scripts/start-e2e-services.js"
   },
   "dependencies": {
     "@clerk/nextjs": "^6.34.5",

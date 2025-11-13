@@ -35,6 +35,15 @@ export default defineConfig({
       },
       dependencies: ["global setup"],
     },
+    {
+      name: "chat flow tests",
+      testMatch: /.*chat-flow.spec.ts/,
+      use: {
+        ...devices["Desktop Chrome"],
+        storageState: "playwright/.clerk/user.json",
+      },
+      dependencies: ["global setup"],
+    },
   ],
 
   // WebServer configuration removed - tests expect server to be running manually

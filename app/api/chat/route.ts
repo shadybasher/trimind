@@ -1,10 +1,8 @@
 import { auth } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "@/lib/prisma";
 import { aiTasksQueue, AITaskJob } from "@/lib/queue";
-
-const prisma = new PrismaClient();
 
 // Zod validation schema for incoming chat messages
 const ChatMessageSchema = z.object({
@@ -91,7 +89,7 @@ export async function POST(req: NextRequest) {
   } catch (error) {
     console.error("[/api/chat] Error:", error);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
-  } finally {
-    await prisma.$disconnect();
   }
+  // Note: Do NOT disconnect prisma - it is a global singleton from @/lib/prisma
+  // Disconnecting after every request causes "Response from the Engine was empty" errors
 }

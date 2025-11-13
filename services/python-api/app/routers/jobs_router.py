@@ -1,8 +1,11 @@
 """Jobs Router for processing AI tasks from BullMQ Proxy."""
 
+import litellm
 from fastapi import APIRouter, BackgroundTasks, Depends
 from pydantic import BaseModel, Field
 from app.dependencies import verify_shared_secret
+from app.routers.intent_router import classify_with_primary
+from app.models import LLMLinguaModel
 
 router = APIRouter()
 
@@ -42,18 +45,66 @@ async def process_ai_job_background(job_data: AIJobRequest):
     Args:
         job_data: AI job data from BullMQ
     """
-    # TODO: Implement full AI processing pipeline
-    # For now, just log the job
     print(f"[Background Task] Processing AI job for message {job_data.messageId}")
-    print(f"  Session: {job_data.sessionId}")
-    print(f"  User: {job_data.userId}")
-    print(f"  Message: {job_data.message[:50]}...")
 
-    # Placeholder for actual implementation:
-    # 1. intent = await classify_intent(job_data.message)
-    # 2. compressed = compress_prompt(job_data.message) if needed
-    # 3. response = await call_llm(compressed, intent.target_model)
-    # 4. save_to_database(job_data.sessionId, response)
+    try:
+        # Step 1: Intent Classification
+        intent_result = await classify_with_primary(job_data.message)
+        print(f"  Intent: {intent_result['intent']}, Target Model: {intent_result['target_model']}")
+
+        # Step 2: Prompt Compression (if message > 500 chars)
+        prompt = job_data.message
+        if len(prompt) > 500:
+            try:
+                compressor = LLMLinguaModel.get_instance()
+                compressed_result = compressor.compress_prompt(
+                    [prompt],
+                    rate=0.5,
+                    force_tokens=[]
+                )
+                prompt = compressed_result["compressed_prompt"]
+                print(f"  Compressed: {len(job_data.message)} -> {len(prompt)} chars")
+            except Exception as e:
+                print(f"  Compression failed (using original): {str(e)}")
+
+        # Step 3: LLM Routing & Execution
+        llm_response = await litellm.acompletion(
+            model=intent_result["target_model"],
+            messages=[
+                {"role": "user", "content": prompt}
+            ],
+            temperature=0.7,
+            max_tokens=1000
+        )
+
+        ai_message = llm_response.choices[0].message.content
+        print(f"  AI Response: {ai_message[:50]}...")
+
+        # Step 4: Save to Database
+        try:
+            # Lazy import to avoid Python 3.14 compatibility issues at module load time
+            from prisma import Prisma
+
+            prisma = Prisma()
+            await prisma.connect()
+            try:
+                await prisma.message.create(
+                    data={
+                        "id": job_data.messageId,  # Use provided messageId
+                        "sessionId": job_data.sessionId,
+                        "userId": job_data.userId,
+                        "role": "assistant",
+                        "content": ai_message
+                    }
+                )
+                print(f"  ✓ Saved to database: {job_data.messageId}")
+            finally:
+                await prisma.disconnect()
+        except ImportError as e:
+            print(f"  ⚠ Prisma client not available (Python 3.14 compatibility): {str(e)}")
+
+    except Exception as e:
+        print(f"  ✗ Error processing job: {str(e)}")
 
 
 @router.post(

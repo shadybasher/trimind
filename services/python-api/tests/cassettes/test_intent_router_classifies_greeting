@@ -1,0 +1,151 @@
+interactions:
+- request:
+    body: '{"messages": [{"role": "system", "content": "You are an intent classifier.
+      Analyze the user''s message and classify it into ONE of these intents: greeting,
+      question, command, feedback, help, other. Respond with ONLY a JSON object in
+      this exact format: {{\"intent\": \"category\", \"confidence\": 0.95, \"target_model\":
+      \"gpt-4o\"}}"}, {"role": "user", "content": "Hello, how are you today?"}], "model":
+      "gpt-4o-mini", "max_tokens": 100, "temperature": 0.0}'
+    headers:
+      accept:
+      - application/json
+      accept-encoding:
+      - gzip, deflate
+      authorization:
+      - REDACTED
+      connection:
+      - keep-alive
+      content-length:
+      - '456'
+      content-type:
+      - application/json
+      host:
+      - api.openai.com
+      user-agent:
+      - AsyncOpenAI/Python 2.7.2
+      x-stainless-arch:
+      - other:amd64
+      x-stainless-async:
+      - async:asyncio
+      x-stainless-lang:
+      - python
+      x-stainless-os:
+      - Windows
+      x-stainless-package-version:
+      - 2.7.2
+      x-stainless-raw-response:
+      - 'true'
+      x-stainless-read-timeout:
+      - '600.0'
+      x-stainless-retry-count:
+      - '0'
+      x-stainless-runtime:
+      - CPython
+      x-stainless-runtime-version:
+      - 3.14.0
+    method: POST
+    uri: https://api.openai.com/v1/chat/completions
+  response:
+    body:
+      string: !!binary |
+        H4sIAAAAAAAAAwAAAP//jJLLbtwwDEX3/gqBazvwOPP0si3QRYEm7bYODI1Ee5TKkiDRfQ3m3wtp
+        HnbaFOjGgHl4KV6Sx4wxUBJqBuLASQxOF2/3777fi896++t5KauPEkf/8ObTh+Hx8f2DgTwq7P4Z
+        BV1Vd8IOTiMpe8HCIyeMVRebdbXbbjb3uwQGK1FHWe+oWNpiUEYVVVkti3JTLLYX9cEqgQFq9iVj
+        jLFj+sY+jcQfULMyv0YGDIH3CPUtiTHwVscI8BBUIG4I8gkKawhNav3YgEo/DdSsgd4jkjJ9Azlr
+        Yl6nJBqBkZZ3u1WMEvc9UptsXFTJSAOn+SMeuzHwaNSMWs8AN8YSj4NK9p4u5HQzpG3vvN2HP6TQ
+        KaPCofXIgzWx+UDWQaKnjLGnNLjxxSzAeTs4asl+xfTcdn0uB9O6JlhdIVnieoovFlX+SrlWInGl
+        w2zyILg4oJyk05r4KJWdgWxm+u9uXqt9Nq5M/z/lJyAEOkLZOo9SiZeOpzSP8Zr/lXYbcmoYAvpv
+        SmBLCn1chMSOj/p8YxB+BsKh7ZTp0TuvzofWuXa1Lnm3xtVqB9kp+w0AAP//AwBFCZM6dgMAAA==
+    headers:
+      CF-RAY:
+      - 99d994762a4f09c9-HFA
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Type:
+      - application/json
+      Date:
+      - Wed, 12 Nov 2025 22:49:00 GMT
+      Server:
+      - cloudflare
+      Set-Cookie:
+      - __cf_bm=PKuQ0Z2TLVIuR1BQTuavvVI7gDJrL2xztWXKh79.aBg-1762987740-1.0.1.1-IoyjMK7Qfbv4T7Fy9C21C.zRspKW.5BFAZ2ZzY6p5MU79QH5h4wOnZDslvO2Po3hdaDfPp3Sxj7CwwRwSXR1pZfxKwKkNiDeBzP6VfmqBko;
+        path=/; expires=Wed, 12-Nov-25 23:19:00 GMT; domain=.api.openai.com; HttpOnly;
+        Secure; SameSite=None
+      - _cfuvid=k6NlCEFwh3pTMjVTfm.PMYfJ71pmKmMpRGpthRvU30A-1762987740524-0.0.1.1-604800000;
+        path=/; domain=.api.openai.com; HttpOnly; Secure; SameSite=None
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains; preload
+      Transfer-Encoding:
+      - chunked
+      X-Content-Type-Options:
+      - nosniff
+      access-control-expose-headers:
+      - X-Request-ID
+      alt-svc:
+      - h3=":443"; ma=86400
+      cf-cache-status:
+      - DYNAMIC
+      openai-organization:
+      - shady-vzdro2
+      openai-processing-ms:
+      - '744'
+      openai-project:
+      - proj_Ci62D2aI4K1meAShtj6X7gUq
+      openai-version:
+      - '2020-10-01'
+      x-envoy-upstream-service-time:
+      - '1085'
+      x-openai-proxy-wasm:
+      - v0.1
+      x-ratelimit-limit-requests:
+      - '5000'
+      x-ratelimit-limit-tokens:
+      - '2000000'
+      x-ratelimit-remaining-requests:
+      - '4999'
+      x-ratelimit-remaining-tokens:
+      - '1999921'
+      x-ratelimit-reset-requests:
+      - 12ms
+      x-ratelimit-reset-tokens:
+      - 2ms
+      x-request-id:
+      - req_2bcd675b4d1d4e4b9f11183b03024cdb
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"text": "Hello, how are you today?"}'
+    headers:
+      accept:
+      - '*/*'
+      accept-encoding:
+      - gzip, deflate
+      authorization:
+      - REDACTED
+      connection:
+      - keep-alive
+      content-length:
+      - '37'
+      content-type:
+      - application/json
+      host:
+      - testserver
+      user-agent:
+      - testclient
+    method: POST
+    uri: http://testserver/api/v1/intent-router-resilient
+  response:
+    body:
+      string: '{"intent":"greeting","source_model":"gpt-4o-mini","target_model":"gpt-4o","confidence":0.95}'
+    headers:
+      content-length:
+      - '92'
+      content-type:
+      - application/json
+    status:
+      code: 200
+      message: OK
+version: 1

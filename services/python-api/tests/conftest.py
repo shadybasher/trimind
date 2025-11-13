@@ -8,8 +8,17 @@ from fastapi.testclient import TestClient
 # Set test environment variables BEFORE importing app
 # This ensures Settings loads test values instead of empty strings
 os.environ["SHARED_SECRET"] = "test-secret-for-testing-only"
-os.environ["OPENAI_API_KEY"] = "test-openai-key"
-os.environ["ANTHROPIC_API_KEY"] = "test-anthropic-key"
+
+# For VCR.py recording with real APIs, load actual keys from .env.local
+# For replay mode, these can be dummy values (VCR will use recorded responses)
+from dotenv import load_dotenv
+load_dotenv(".env.local")  # Load real API keys for VCR recording
+
+# Fallback to test values if not in .env.local
+if "OPENAI_API_KEY" not in os.environ:
+    os.environ["OPENAI_API_KEY"] = "test-openai-key"
+if "ANTHROPIC_API_KEY" not in os.environ:
+    os.environ["ANTHROPIC_API_KEY"] = "test-anthropic-key"
 
 # Now import app after env vars are set
 from app.main import app  # noqa: E402
@@ -37,7 +46,7 @@ def vcr_config():
             ("authorization", "REDACTED"),
             ("x-api-key", "REDACTED"),
         ],
-        "record_mode": "none",  # Safe default: never record, only replay
+        "record_mode": "once",  # Record cassettes once, then replay
         "cassette_library_dir": "tests/cassettes",
         "path_transformer": lambda path: path,  # Keep original cassette names
         "match_on": ["method", "scheme", "host", "port", "path", "query"],

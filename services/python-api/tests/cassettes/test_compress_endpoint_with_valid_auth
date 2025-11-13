@@ -1,0 +1,358 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - identity
+      Connection:
+      - keep-alive
+      X-Amzn-Trace-Id:
+      - 728524e2-81f7-4164-9944-05c952c614f6
+      user-agent:
+      - unknown/None; hf_hub/0.36.0; python/3.14.0; torch/2.9.1; transformers/4.57.1;
+        session_id/d7336dc4e4f54849ae7c98c9250f48c9; file_type/config; from_auto_class/True
+    method: HEAD
+    uri: https://huggingface.co/microsoft/llmlingua-2-xlm-roberta-large-meetingbank/resolve/main/config.json
+  response:
+    body:
+      string: ''
+    headers:
+      Accept-Ranges:
+      - bytes
+      Access-Control-Allow-Origin:
+      - https://huggingface.co
+      Access-Control-Expose-Headers:
+      - X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash
+      Access-Control-Max-Age:
+      - '86400'
+      Connection:
+      - keep-alive
+      Content-Disposition:
+      - inline; filename*=UTF-8''config.json; filename="config.json";
+      Content-Length:
+      - '306'
+      Content-Security-Policy:
+      - default-src 'none'; sandbox
+      Content-Type:
+      - text/plain; charset=utf-8
+      Date:
+      - Wed, 12 Nov 2025 22:52:57 GMT
+      Location:
+      - /api/resolve-cache/models/microsoft/llmlingua-2-xlm-roberta-large-meetingbank/ebaba9b0e874dadd3003ffcff828e4397e568089/config.json?%2Fmicrosoft%2Fllmlingua-2-xlm-roberta-large-meetingbank%2Fresolve%2Fmain%2Fconfig.json=&etag=%22540a768cb1c505b2e5084af5c6cde92980dd210d%22
+      RateLimit:
+      - '"resolvers";r=2999;t=212'
+      RateLimit-Policy:
+      - '"fixed window";"resolvers";q=3000;w=300'
+      Referrer-Policy:
+      - strict-origin-when-cross-origin
+      Vary:
+      - Origin, Accept
+      Via:
+      - 1.1 fe45f5956e3b67d2cd2349a8dd45ee96.cloudfront.net (CloudFront)
+      X-Amz-Cf-Id:
+      - iYmwFh_deGKKPmLjmWlnyLWkIDOWHl_3tnysRSM__5hDAa89ry80yA==
+      X-Amz-Cf-Pop:
+      - TLV50-C1
+      X-Cache:
+      - Miss from cloudfront
+      X-Hub-Cache:
+      - MISS
+      X-Linked-ETag:
+      - '"540a768cb1c505b2e5084af5c6cde92980dd210d"'
+      X-Powered-By:
+      - huggingface-moon
+      X-Repo-Commit:
+      - ebaba9b0e874dadd3003ffcff828e4397e568089
+      X-Request-Id:
+      - Root=1-69150fc9-0b56fa617acdd26c4b007f59;728524e2-81f7-4164-9944-05c952c614f6
+      cross-origin-opener-policy:
+      - same-origin
+    status:
+      code: 307
+      message: Temporary Redirect
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - identity
+      Connection:
+      - keep-alive
+      X-Amzn-Trace-Id:
+      - 6d7dd387-9a31-44f9-aff5-9e35006bd511
+      user-agent:
+      - unknown/None; hf_hub/0.36.0; python/3.14.0; torch/2.9.1; transformers/4.57.1;
+        session_id/d7336dc4e4f54849ae7c98c9250f48c9; file_type/config; from_auto_class/True
+    method: HEAD
+    uri: https://huggingface.co/api/resolve-cache/models/microsoft/llmlingua-2-xlm-roberta-large-meetingbank/ebaba9b0e874dadd3003ffcff828e4397e568089/config.json
+  response:
+    body:
+      string: ''
+    headers:
+      Accept-Ranges:
+      - bytes
+      Access-Control-Allow-Origin:
+      - https://huggingface.co
+      Access-Control-Expose-Headers:
+      - X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash
+      Access-Control-Max-Age:
+      - '86400'
+      Age:
+      - '1339212'
+      Connection:
+      - keep-alive
+      Content-Disposition:
+      - inline; filename*=UTF-8''config.json; filename="config.json";
+      Content-Length:
+      - '752'
+      Content-Security-Policy:
+      - default-src 'none'; sandbox
+      Content-Type:
+      - text/plain; charset=utf-8
+      Date:
+      - Tue, 28 Oct 2025 10:52:46 GMT
+      ETag:
+      - '"540a768cb1c505b2e5084af5c6cde92980dd210d"'
+      RateLimit:
+      - '"resolvers";r=2997;t=286'
+      RateLimit-Policy:
+      - '"fixed window";"resolvers";q=3000;w=300'
+      Referrer-Policy:
+      - strict-origin-when-cross-origin
+      Vary:
+      - Origin
+      Via:
+      - 1.1 42b75b2f786059fa572a801a0e071c32.cloudfront.net (CloudFront)
+      X-Amz-Cf-Id:
+      - 0R0tT0rCEguqP2tZbbOwbbA1UmpLkxNK79_KYQEyRb92Xe8ArGPvvA==
+      X-Amz-Cf-Pop:
+      - TLV50-C1
+      X-Cache:
+      - Hit from cloudfront
+      X-Hub-Cache:
+      - MISS
+      X-Powered-By:
+      - huggingface-moon
+      X-Repo-Commit:
+      - ebaba9b0e874dadd3003ffcff828e4397e568089
+      X-Request-Id:
+      - Root=1-6900a07e-3ceba90e13c5b0025c9a5265;bf2f80f4-6e9c-4994-927c-09e29d2c4012
+      cross-origin-opener-policy:
+      - same-origin
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - identity
+      Connection:
+      - keep-alive
+      X-Amzn-Trace-Id:
+      - a2e68d03-2372-4e34-8b8d-57b9338b648f
+      user-agent:
+      - unknown/None; hf_hub/0.36.0; python/3.14.0; torch/2.9.1; transformers/4.57.1;
+        session_id/d7336dc4e4f54849ae7c98c9250f48c9
+    method: HEAD
+    uri: https://huggingface.co/microsoft/llmlingua-2-xlm-roberta-large-meetingbank/resolve/main/tokenizer_config.json
+  response:
+    body:
+      string: ''
+    headers:
+      Accept-Ranges:
+      - bytes
+      Access-Control-Allow-Origin:
+      - https://huggingface.co
+      Access-Control-Expose-Headers:
+      - X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash
+      Access-Control-Max-Age:
+      - '86400'
+      Connection:
+      - keep-alive
+      Content-Disposition:
+      - inline; filename*=UTF-8''tokenizer_config.json; filename="tokenizer_config.json";
+      Content-Length:
+      - '326'
+      Content-Security-Policy:
+      - default-src 'none'; sandbox
+      Content-Type:
+      - text/plain; charset=utf-8
+      Date:
+      - Wed, 12 Nov 2025 22:52:58 GMT
+      Location:
+      - /api/resolve-cache/models/microsoft/llmlingua-2-xlm-roberta-large-meetingbank/ebaba9b0e874dadd3003ffcff828e4397e568089/tokenizer_config.json?%2Fmicrosoft%2Fllmlingua-2-xlm-roberta-large-meetingbank%2Fresolve%2Fmain%2Ftokenizer_config.json=&etag=%2231cf25a6c1a3e2f4183a314ad8252cd2919f6968%22
+      RateLimit:
+      - '"resolvers";r=2998;t=211'
+      RateLimit-Policy:
+      - '"fixed window";"resolvers";q=3000;w=300'
+      Referrer-Policy:
+      - strict-origin-when-cross-origin
+      Vary:
+      - Origin, Accept
+      Via:
+      - 1.1 d4e2a230c602065d2e7043c30b343ff6.cloudfront.net (CloudFront)
+      X-Amz-Cf-Id:
+      - DxxYWDEkwZI39WXfgnII2qVNzLA07fjHRiazZQctFPo8RcNvbgwFPQ==
+      X-Amz-Cf-Pop:
+      - TLV50-C1
+      X-Cache:
+      - Miss from cloudfront
+      X-Hub-Cache:
+      - MISS
+      X-Linked-ETag:
+      - '"31cf25a6c1a3e2f4183a314ad8252cd2919f6968"'
+      X-Powered-By:
+      - huggingface-moon
+      X-Repo-Commit:
+      - ebaba9b0e874dadd3003ffcff828e4397e568089
+      X-Request-Id:
+      - Root=1-69150fca-4ecf9fa9719930a40e83e6df;a2e68d03-2372-4e34-8b8d-57b9338b648f
+      cross-origin-opener-policy:
+      - same-origin
+    status:
+      code: 307
+      message: Temporary Redirect
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - identity
+      Connection:
+      - keep-alive
+      X-Amzn-Trace-Id:
+      - 1b7fb6f4-41e0-4c77-bccc-535eb4dc031a
+      user-agent:
+      - unknown/None; hf_hub/0.36.0; python/3.14.0; torch/2.9.1; transformers/4.57.1;
+        session_id/d7336dc4e4f54849ae7c98c9250f48c9
+    method: HEAD
+    uri: https://huggingface.co/api/resolve-cache/models/microsoft/llmlingua-2-xlm-roberta-large-meetingbank/ebaba9b0e874dadd3003ffcff828e4397e568089/tokenizer_config.json
+  response:
+    body:
+      string: ''
+    headers:
+      Accept-Ranges:
+      - bytes
+      Access-Control-Allow-Origin:
+      - https://huggingface.co
+      Access-Control-Expose-Headers:
+      - X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash
+      Access-Control-Max-Age:
+      - '86400'
+      Age:
+      - '1339211'
+      Connection:
+      - keep-alive
+      Content-Disposition:
+      - inline; filename*=UTF-8''tokenizer_config.json; filename="tokenizer_config.json";
+      Content-Length:
+      - '1147'
+      Content-Security-Policy:
+      - default-src 'none'; sandbox
+      Content-Type:
+      - text/plain; charset=utf-8
+      Date:
+      - Tue, 28 Oct 2025 10:52:47 GMT
+      ETag:
+      - '"31cf25a6c1a3e2f4183a314ad8252cd2919f6968"'
+      RateLimit:
+      - '"resolvers";r=2993;t=285'
+      RateLimit-Policy:
+      - '"fixed window";"resolvers";q=3000;w=300'
+      Referrer-Policy:
+      - strict-origin-when-cross-origin
+      Vary:
+      - Origin
+      Via:
+      - 1.1 c745fe464cb9993204ab3aaa0012f3f4.cloudfront.net (CloudFront)
+      X-Amz-Cf-Id:
+      - uVoZRxSPAOtF2KwNJWW3yUR-BiXYjuIYCh-4CF_6pvxWCTd9aGe2Rg==
+      X-Amz-Cf-Pop:
+      - TLV50-C1
+      X-Cache:
+      - Hit from cloudfront
+      X-Hub-Cache:
+      - MISS
+      X-Powered-By:
+      - huggingface-moon
+      X-Repo-Commit:
+      - ebaba9b0e874dadd3003ffcff828e4397e568089
+      X-Request-Id:
+      - Root=1-6900a07f-4c0f3ae404d6c63c455acc02;f7e5436a-b61d-4acd-8b72-07a3916b57d4
+      cross-origin-opener-policy:
+      - same-origin
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      Connection:
+      - keep-alive
+      X-Amzn-Trace-Id:
+      - ce74768c-7064-4fe9-afc5-ca44c11bd2be
+      user-agent:
+      - unknown/None; hf_hub/0.36.0; python/3.14.0; torch/2.9.1
+    method: GET
+    uri: https://huggingface.co/api/models/microsoft/llmlingua-2-xlm-roberta-large-meetingbank/tree/main/additional_chat_templates?recursive=False&expand=False
+  response:
+    body:
+      string: '{"error":"additional_chat_templates does not exist on \"main\""}'
+    headers:
+      Access-Control-Allow-Origin:
+      - https://huggingface.co
+      Access-Control-Expose-Headers:
+      - X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash
+      Access-Control-Max-Age:
+      - '86400'
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '64'
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Wed, 12 Nov 2025 22:52:59 GMT
+      ETag:
+      - W/"40-09f9IAqP13xarAhQxFS2W8rvRkM"
+      RateLimit:
+      - '"api";r=499;t=210'
+      RateLimit-Policy:
+      - '"fixed window";"api";q=500;w=300'
+      Referrer-Policy:
+      - strict-origin-when-cross-origin
+      Vary:
+      - Origin
+      Via:
+      - 1.1 42b75b2f786059fa572a801a0e071c32.cloudfront.net (CloudFront)
+      X-Amz-Cf-Id:
+      - BY9Xwpg1gOXuVRv3UHIYpwhj1dpeDaZbBqbzjU5Lm4kxlaWSJWS1wg==
+      X-Amz-Cf-Pop:
+      - TLV50-C1
+      X-Cache:
+      - Error from cloudfront
+      X-Error-Code:
+      - EntryNotFound
+      X-Error-Message:
+      - additional_chat_templates does not exist on "main"
+      X-Powered-By:
+      - huggingface-moon
+      X-Request-Id:
+      - Root=1-69150fcb-5c748fab0caf5213071a35d2;ce74768c-7064-4fe9-afc5-ca44c11bd2be
+      cross-origin-opener-policy:
+      - same-origin
+    status:
+      code: 404
+      message: Not Found
+version: 1
