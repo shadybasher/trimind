@@ -75,7 +75,7 @@ services:
     environment:
       - REDIS_URL=redis://redis:6379
       - PYTHON_API_URL=http://python-api:8000
-      - SHARED_SECRET=${SHARED_SECRET}
+      # SHARED_SECRET loaded from env_file (no override needed)
     depends_on:
       redis:
         condition: service_healthy
