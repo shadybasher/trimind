@@ -207,7 +207,7 @@ jobs:
           echo "✅ Next.js is ready"
 
           echo "Waiting for Python API (localhost:8000)..."
-          npx wait-on http://localhost:8000/health --timeout 120000
+          npx wait-on http-get://localhost:8000/health --timeout 120000
           echo "✅ Python API is ready"
 
           echo "Waiting for PostgreSQL..."
