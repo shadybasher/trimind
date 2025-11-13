@@ -41,10 +41,7 @@ test.describe("Chat Flow - Epic 5 Async Pipeline", () => {
     // Step 3: Wait for AI response to appear
     // The full pipeline: BullMQ → Python API → Intent Router → LLM → Database → UI
     // This can take up to 30 seconds depending on LLM latency
-    await page.waitForSelector(
-      '[data-role="assistant"]:last-of-type',
-      { timeout: 30000 }
-    );
+    await page.waitForSelector('[data-role="assistant"]:last-of-type', { timeout: 30000 });
 
     // Step 4: Verify AI response is visible and non-empty
     const aiResponse = page.locator('[data-role="assistant"]:last-of-type');
@@ -62,11 +59,7 @@ test.describe("Chat Flow - Epic 5 Async Pipeline", () => {
   });
 
   test("should handle multiple messages in sequence", async ({ page }) => {
-    const messages = [
-      "First test message",
-      "Second test message",
-      "Third test message",
-    ];
+    const messages = ["First test message", "Second test message", "Third test message"];
 
     const messageInput = page.locator("textarea[placeholder*='Type your message']");
 
@@ -84,10 +77,7 @@ test.describe("Chat Flow - Epic 5 Async Pipeline", () => {
     }
 
     // Verify at least 3 AI responses appear (one per message)
-    await page.waitForSelector(
-      '[data-role="assistant"]',
-      { timeout: 30000 }
-    );
+    await page.waitForSelector('[data-role="assistant"]', { timeout: 30000 });
 
     const aiResponses = page.locator('[data-role="assistant"]');
     const count = await aiResponses.count();
@@ -126,10 +116,7 @@ test.describe("Chat Flow - Epic 5 Async Pipeline", () => {
     }
 
     // Eventually, the AI response should appear
-    await page.waitForSelector(
-      '[data-role="assistant"]:last-of-type',
-      { timeout: 30000 }
-    );
+    await page.waitForSelector('[data-role="assistant"]:last-of-type', { timeout: 30000 });
 
     // If there was a loading indicator, it should be gone now
     if (hasLoadingIndicator) {
@@ -148,10 +135,7 @@ test.describe("Chat Flow - Epic 5 Async Pipeline", () => {
     await messageInput.press("Enter");
 
     // Wait for AI response
-    await page.waitForSelector(
-      '[data-role="assistant"]:last-of-type',
-      { timeout: 30000 }
-    );
+    await page.waitForSelector('[data-role="assistant"]:last-of-type', { timeout: 30000 });
 
     // Reload the page
     await page.reload();
@@ -160,8 +144,8 @@ test.describe("Chat Flow - Epic 5 Async Pipeline", () => {
     // Verify both user message and AI response are still visible
     // Note: Message appears in 4 places (textarea + 3 chat panes), use .first() to avoid strict mode violation
     await expect(page.getByText(testMessage).first()).toBeVisible({ timeout: 5000 });
-    await expect(
-      page.locator('[data-role="assistant"]:last-of-type')
-    ).toBeVisible({ timeout: 5000 });
+    await expect(page.locator('[data-role="assistant"]:last-of-type')).toBeVisible({
+      timeout: 5000,
+    });
   });
 });

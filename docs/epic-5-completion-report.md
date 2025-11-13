@@ -10,6 +10,7 @@
 ## Executive Summary
 
 Epic 5 successfully implemented a **production-grade Python microservices architecture** for AI processing with:
+
 - ✅ FastAPI service with Zero Trust security
 - ✅ Intent Router with Circuit Breaker pattern (resilience)
 - ✅ LLMLingua-2 prompt compression (cost optimization)
@@ -54,14 +55,17 @@ Epic 5 successfully implemented a **production-grade Python microservices archit
 ## Implementation Overview
 
 ### Phase 1: FastAPI Service Foundation
+
 **Tasks 1-2 Completed**
 
 #### Zero Trust Security Architecture
+
 - Shared secret authentication (`secrets.compare_digest` - timing-attack resistant)
 - Environment variable configuration with Pydantic BaseSettings
 - Protected endpoints with `Depends(verify_shared_secret)`
 
 **Files Created:**
+
 - `services/python-api/app/main.py` - FastAPI application with lifespan manager
 - `services/python-api/app/config.py` - Settings management
 - `services/python-api/app/dependencies.py` - Security middleware
@@ -70,9 +74,11 @@ Epic 5 successfully implemented a **production-grade Python microservices archit
 ---
 
 ### Phase 2: AI Intelligence Endpoints
+
 **Tasks 3-4 Completed**
 
 #### Intent Router with Circuit Breaker (Async)
+
 - LiteLLM integration for multi-provider LLM access
 - Circuit Breaker pattern (50% failure threshold, 30s cooldown)
 - Async endpoint for non-blocking I/O
@@ -81,6 +87,7 @@ Epic 5 successfully implemented a **production-grade Python microservices archit
 **Endpoint:** `POST /api/v1/intent-router-resilient`
 
 #### LLMLingua-2 Compression (Sync)
+
 - Microsoft's SOTA prompt compression model
 - Singleton pattern with lifespan manager for model loading
 - 50% token reduction with semantic preservation
@@ -89,6 +96,7 @@ Epic 5 successfully implemented a **production-grade Python microservices archit
 **Endpoint:** `POST /api/v1/compress`
 
 **Files Created:**
+
 - `services/python-api/app/routers/intent_router.py`
 - `services/python-api/app/routers/compression_router.py`
 - `services/python-api/app/models.py` - LLMLingua singleton
@@ -96,9 +104,11 @@ Epic 5 successfully implemented a **production-grade Python microservices archit
 ---
 
 ### Phase 3: BullMQ Async Architecture
+
 **Tasks 5a-5c Completed**
 
 #### Next.js → BullMQ → Python Pipeline
+
 1. **Next.js API** - Enqueues jobs to BullMQ (Redis), returns `202 Accepted`
 2. **BullMQ Proxy** - Node.js worker processes queue, calls Python webhook
 3. **Python Webhook** - Receives job, starts background processing, returns `200 OK`
@@ -106,11 +116,13 @@ Epic 5 successfully implemented a **production-grade Python microservices archit
 **Endpoint:** `POST /api/v1/jobs/process-ai-job`
 
 **Files Created/Modified:**
+
 - `services/python-api/app/routers/jobs_router.py`
 - `app/api/chat/route.ts` (modified - BullMQ integration)
 - `services/bullmq-proxy/worker.ts` (created - async job processor)
 
 **Benefits:**
+
 - Non-blocking user experience (immediate 202 response)
 - Resilient to Python service outages (jobs queued)
 - Horizontal scalability (multiple workers)
@@ -118,9 +130,11 @@ Epic 5 successfully implemented a **production-grade Python microservices archit
 ---
 
 ### Phase 4: Docker Infrastructure
+
 **Task 6 Completed**
 
 #### Production-Ready Containerization
+
 - Multi-stage Docker build (builder + runtime)
 - Python 3.11 slim base image
 - Health check endpoint
@@ -128,6 +142,7 @@ Epic 5 successfully implemented a **production-grade Python microservices archit
 - Uvicorn ASGI server (production-grade)
 
 **Files Created:**
+
 - `services/python-api/Dockerfile`
 - `services/python-api/.dockerignore`
 - `docker-compose.yml` (updated)
@@ -135,37 +150,45 @@ Epic 5 successfully implemented a **production-grade Python microservices archit
 ---
 
 ### Phase 5: Testing Suite
+
 **Tasks 7-8 Completed**
 
 #### Python Test Coverage (13 Tests)
+
 - **Authentication tests** - Verify 403 without shared secret
 - **Validation tests** - Input sanitization (rate limits, length checks)
 - **Mocked LLM tests** - Deterministic responses with `unittest.mock`
 - **Edge case tests** - Special characters, boundary conditions
 
 **Test Files:**
+
 - `services/python-api/tests/conftest.py` - Fixtures & test environment
 - `services/python-api/tests/test_compression.py` - 4 tests
 - `services/python-api/tests/test_intent_router.py` - 5 tests
 - `services/python-api/tests/test_jobs_router.py` - 4 tests
 
 **Next.js Test Updates:**
+
 - Modified API tests for async BullMQ flow (202 vs 200 responses)
 - Updated integration tests for queue-based architecture
 
 ---
 
 ### Phase 6: CI/CD Pipeline
+
 **Task 9 Completed**
 
 #### Python Quality Gate (0 Errors Policy)
+
 GitHub Actions workflow enforces:
+
 1. **Ruff Linting** - Fast Python linter (E/F/W rules)
 2. **Black Formatting** - Opinionated code formatter
 3. **Mypy Type Checking** - Static type analysis
 4. **Pytest Execution** - All tests must pass
 
 **Files Created/Modified:**
+
 - `.github/workflows/ci.yml` (added Python job)
 
 ---
@@ -173,11 +196,13 @@ GitHub Actions workflow enforces:
 ## Iterations to CI GREEN (10 Total)
 
 ### Pre-Session Pushes (Previous Context)
+
 1. **Initial Python service setup** - FastAPI structure
 2. **Fix litellm version** - `1.58.5` → `1.58.4` (PyPI availability)
 3. **Fix httpx dependency** - `0.28.1` → `0.27.2` (litellm compatibility)
 
 ### Current Session Pushes
+
 4. **Commit a9f4ffb** - Fix ruff linting (E402, F401, F811)
    - Moved router imports to top of main.py
    - Removed unused imports (HTTPException, status, pytest)
@@ -208,26 +233,32 @@ GitHub Actions workflow enforces:
 ## Root Cause Analysis Summary
 
 ### Error #1: Ruff Linting Violations
+
 **Problem:** Import order (E402), unused imports (F401), name redefinition (F811)
 **Solution:** Reorganized imports, removed dead code
 
 ### Error #2: Black Formatting
+
 **Problem:** Line wrapping inconsistencies
 **Solution:** Ran `black` auto-formatter
 
 ### Error #3: Mypy Type Errors
+
 **Problem:** Mypy doesn't understand Pydantic BaseSettings magic
 **Solution:** Added type ignore comment with explanation
 
 ### Error #4: Pytest Auth Failures
+
 **Problem:** Environment variables empty in CI, causing 403 errors
 **Solution:** Set test env vars BEFORE importing app
 
 ### Error #5: VCR.py Cassette Errors
+
 **Problem:** No cassettes exist, record_mode='none' prevents creation
 **Solution:** Replaced VCR.py with `unittest.mock` for deterministic LLM responses
 
 ### Error #6: Model Loading Conflicts
+
 **Problem:** PyTorch model library version incompatibilities in CI
 **Solution:** Mocked model to avoid loading heavy ML dependencies in tests
 
@@ -236,25 +267,33 @@ GitHub Actions workflow enforces:
 ## Key Technical Decisions
 
 ### 1. Why unittest.mock Instead of VCR.py?
+
 **Rationale:**
+
 - VCR.py records real API calls, but we don't want CI making external LLM requests
 - Mocking provides deterministic, fast, free tests
 - No cassette management overhead
 
 ### 2. Why Sync Endpoint for Compression?
+
 **Rationale:**
+
 - Model inference is CPU-bound, not I/O-bound
 - FastAPI automatically runs sync functions in thread pool
 - Prevents event loop blocking
 
 ### 3. Why Singleton for LLMLingua Model?
+
 **Rationale:**
+
 - Model loading is expensive (multi-GB download, GPU/CPU allocation)
 - Single instance shared across requests
 - Lifespan manager ensures load-once-at-startup pattern
 
 ### 4. Why BullMQ Instead of Direct Python Calls?
+
 **Rationale:**
+
 - Decouples Next.js from Python service uptime
 - Provides job retry/failure handling
 - Enables future horizontal scaling
@@ -264,6 +303,7 @@ GitHub Actions workflow enforces:
 ## Test Results Summary
 
 ### Python API Tests (pytest)
+
 ```
 services/python-api/tests/test_compression.py::test_compress_endpoint_requires_auth PASSED
 services/python-api/tests/test_compression.py::test_compress_endpoint_with_valid_auth PASSED
@@ -285,6 +325,7 @@ services/python-api/tests/test_jobs_router.py::test_process_ai_job_validates_req
 ```
 
 ### Next.js Tests
+
 - ESLint: 0 errors
 - Prettier: 0 formatting issues
 - TypeScript: 0 type errors
@@ -293,6 +334,7 @@ services/python-api/tests/test_jobs_router.py::test_process_ai_job_validates_req
 - Unit & Integration: 30 passed
 
 ### E2E Tests (Playwright)
+
 - 8/8 tests passed
 - Dashboard navigation, chat interface, authentication flows
 
@@ -301,6 +343,7 @@ services/python-api/tests/test_jobs_router.py::test_process_ai_job_validates_req
 ## Files Created/Modified
 
 ### New Files (Epic 5)
+
 ```
 services/python-api/
 ├── app/
@@ -334,6 +377,7 @@ docs/
 ```
 
 ### Modified Files
+
 ```
 .github/workflows/ci.yml      # Added Python quality gate
 docker-compose.yml            # Added python-api service

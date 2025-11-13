@@ -28,6 +28,8 @@ const eslintConfig = defineConfig([
     "next-env.d.ts",
     // Microservices (Python, BullMQ Proxy)
     "services/**",
+    // Utility scripts (Node.js CommonJS)
+    "scripts/**",
   ]),
 ]);
 
