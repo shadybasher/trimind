@@ -7,7 +7,12 @@
  * 3. Handles retries and dead-letter queue
  */
 
-require("dotenv").config({ path: "../../.env" });
+// Load .env file for local development (Docker Compose injects env vars directly)
+const fs = require("fs");
+const envPath = "../../.env";
+if (fs.existsSync(envPath)) {
+  require("dotenv").config({ path: envPath });
+}
 const { Worker } = require("bullmq");
 const Redis = require("ioredis");
 
