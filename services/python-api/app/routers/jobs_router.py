@@ -95,7 +95,9 @@ async def process_ai_job_background(job_data: AIJobRequest):
                         "content": ai_message,
                     }
                 )
-                print(f"  ✓ Saved to database: AI message {ai_message_record.id} (for user message {job_data.messageId})")
+                print(
+                    f"  ✓ Saved to database: AI message {ai_message_record.id} (for user message {job_data.messageId})"
+                )
             finally:
                 await prisma.disconnect()
         except ImportError as e:
@@ -158,7 +160,9 @@ async def process_ai_job_webhook(
     # Generate unique job ID for tracking
     job_id = f"job-{job_data.messageId}-{hash(job_data.timestamp)}"
 
-    print(f"[Python Worker] Webhook received for Job {job_id} (message {job_data.messageId})")
+    print(
+        f"[Python Worker] Webhook received for Job {job_id} (message {job_data.messageId})"
+    )
 
     # Add AI processing to background tasks (runs after response sent)
     background_tasks.add_task(process_ai_job_background, job_data)
