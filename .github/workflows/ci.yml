@@ -178,7 +178,12 @@ jobs:
           CLERK_SECRET_KEY: ${{ secrets.CLERK_SECRET_KEY }}
 
       - name: Start Next.js Server
-        run: nohup npm start > nextjs.log 2>&1 &
+        run: |
+          nohup npm start > nextjs.log 2>&1 &
+          echo $! > nextjs.pid
+          sleep 10
+          echo "Next.js PID: $(cat nextjs.pid)"
+          ps aux | grep -E "next|node" | grep -v grep || echo "No Next.js process found"
         env:
           NODE_ENV: production
           DATABASE_URL: postgresql://trimind:trimind_ci_password@localhost:5432/trimind
@@ -195,6 +200,9 @@ jobs:
       - name: Wait for All Services (Health Checks)
         run: |
           echo "Waiting for Next.js (localhost:3000)..."
+          echo "Trying curl first..."
+          curl -v http://localhost:3000/api/health || echo "Curl failed"
+          echo "Now using wait-on..."
           npx wait-on http://localhost:3000/api/health --timeout 120000
           echo "✅ Next.js is ready"
 
