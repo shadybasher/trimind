@@ -161,7 +161,7 @@ jobs:
           EOF
 
       - name: Start Full Stack (Docker Compose)
-        run: docker-compose -f docker-compose.yml up -d --build
+        run: docker compose -f docker-compose.yml up -d --build
         env:
           SHARED_SECRET: ${{ secrets.SHARED_SECRET }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
@@ -210,7 +210,7 @@ jobs:
 
       - name: Show Docker Compose Logs (on failure)
         if: failure()
-        run: docker-compose logs --tail=100
+        run: docker compose logs --tail=100
 
       - name: Upload Playwright Report
         uses: actions/upload-artifact@v4
@@ -222,7 +222,7 @@ jobs:
 
       - name: Cleanup Docker Compose
         if: always()
-        run: docker-compose down -v
+        run: docker compose down -v
 
   status-check:
     name: CI Status
