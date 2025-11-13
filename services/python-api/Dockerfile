@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy requirements and install dependencies
-COPY requirements.txt .
+COPY services/python-api/requirements.txt .
 RUN pip install --no-cache-dir --user -r requirements.txt
 
 # ========================================
@@ -33,14 +33,14 @@ COPY --from=builder /root/.local /root/.local
 # Ensure PATH includes user-installed packages
 ENV PATH=/root/.local/bin:$PATH
 
-# Copy Prisma schema from project root (2 levels up)
-COPY ../../prisma ./prisma
+# Copy Prisma schema from project root
+COPY prisma ./prisma
 
 # Generate Prisma Client for Python
-RUN prisma generate
+RUN prisma generate --schema=./prisma/schema.prisma
 
 # Copy application code
-COPY app ./app
+COPY services/python-api/app ./app
 
 # Expose port
 EXPOSE 8000

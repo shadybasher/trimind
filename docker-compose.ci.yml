@@ -41,8 +41,8 @@ services:
   # ========================================
   python-api:
     build:
-      context: ./services/python-api
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: services/python-api/Dockerfile
     container_name: trimind-python-api-ci
     env_file: .env
     environment:
