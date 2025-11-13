@@ -1,7 +1,6 @@
 """Tests for LLMLingua-2 compression endpoint."""
 
 
-
 def test_compress_endpoint_requires_auth(client):
     """Test that compression endpoint requires authentication."""
     response = client.post(
@@ -30,7 +29,10 @@ def test_compress_endpoint_with_valid_auth(client, auth_headers):
 
     # Endpoint should either succeed (200) or fail gracefully (500)
     # Both are acceptable given Python 3.14 compatibility issues
-    assert response.status_code in [200, 500], f"Unexpected status: {response.status_code}"
+    assert response.status_code in [
+        200,
+        500,
+    ], f"Unexpected status: {response.status_code}"
 
     if response.status_code == 200:
         # If model works, validate full response

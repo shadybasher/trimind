@@ -12,6 +12,7 @@ os.environ["SHARED_SECRET"] = "test-secret-for-testing-only"
 # For VCR.py recording with real APIs, load actual keys from .env.local
 # For replay mode, these can be dummy values (VCR will use recorded responses)
 from dotenv import load_dotenv
+
 load_dotenv(".env.local")  # Load real API keys for VCR recording
 
 # Fallback to test values if not in .env.local

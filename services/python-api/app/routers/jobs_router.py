@@ -50,7 +50,9 @@ async def process_ai_job_background(job_data: AIJobRequest):
     try:
         # Step 1: Intent Classification
         intent_result = await classify_with_primary(job_data.message)
-        print(f"  Intent: {intent_result['intent']}, Target Model: {intent_result['target_model']}")
+        print(
+            f"  Intent: {intent_result['intent']}, Target Model: {intent_result['target_model']}"
+        )
 
         # Step 2: Prompt Compression (if message > 500 chars)
         prompt = job_data.message
@@ -58,9 +60,7 @@ async def process_ai_job_background(job_data: AIJobRequest):
             try:
                 compressor = LLMLinguaModel.get_instance()
                 compressed_result = compressor.compress_prompt(
-                    [prompt],
-                    rate=0.5,
-                    force_tokens=[]
+                    [prompt], rate=0.5, force_tokens=[]
                 )
                 prompt = compressed_result["compressed_prompt"]
                 print(f"  Compressed: {len(job_data.message)} -> {len(prompt)} chars")
@@ -70,11 +70,9 @@ async def process_ai_job_background(job_data: AIJobRequest):
         # Step 3: LLM Routing & Execution
         llm_response = await litellm.acompletion(
             model=intent_result["target_model"],
-            messages=[
-                {"role": "user", "content": prompt}
-            ],
+            messages=[{"role": "user", "content": prompt}],
             temperature=0.7,
-            max_tokens=1000
+            max_tokens=1000,
         )
 
         ai_message = llm_response.choices[0].message.content
@@ -94,14 +92,16 @@ async def process_ai_job_background(job_data: AIJobRequest):
                         "sessionId": job_data.sessionId,
                         "userId": job_data.userId,
                         "role": "assistant",
-                        "content": ai_message
+                        "content": ai_message,
                     }
                 )
                 print(f"  ✓ Saved to database: {job_data.messageId}")
             finally:
                 await prisma.disconnect()
         except ImportError as e:
-            print(f"  ⚠ Prisma client not available (Python 3.14 compatibility): {str(e)}")
+            print(
+                f"  ⚠ Prisma client not available (Python 3.14 compatibility): {str(e)}"
+            )
 
     except Exception as e:
         print(f"  ✗ Error processing job: {str(e)}")

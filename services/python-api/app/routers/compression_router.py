@@ -96,7 +96,9 @@ def compress_prompt(request: CompressionRequest) -> CompressionResponse:
         compressed_text = compressed_result["compressed_prompt"]
         original_tokens = len(request.prompt.split())  # Approximate token count
         compressed_tokens = len(compressed_text.split())  # Approximate token count
-        actual_ratio = compressed_tokens / original_tokens if original_tokens > 0 else 0.0
+        actual_ratio = (
+            compressed_tokens / original_tokens if original_tokens > 0 else 0.0
+        )
         savings = original_tokens - compressed_tokens
 
         return CompressionResponse(
@@ -110,7 +112,8 @@ def compress_prompt(request: CompressionRequest) -> CompressionResponse:
         # LLMLingua may fail on Python 3.14 due to transformers compatibility
         # Return error via HTTPException
         from fastapi import HTTPException
+
         raise HTTPException(
             status_code=500,
-            detail=f"Compression model error (Python 3.14 compatibility): {str(e)}"
+            detail=f"Compression model error (Python 3.14 compatibility): {str(e)}",
         )
