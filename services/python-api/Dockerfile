@@ -15,6 +15,10 @@ RUN apt-get update && apt-get install -y \
 COPY services/python-api/requirements.txt .
 RUN pip install --no-cache-dir --user -r requirements.txt
 
+# Copy Prisma schema and generate client in builder stage
+COPY prisma ./prisma
+RUN prisma generate --schema=./prisma/schema.prisma
+
 # ========================================
 # Stage 2: Runtime
 # ========================================
@@ -33,12 +37,6 @@ COPY --from=builder /root/.local /root/.local
 
 # Ensure PATH includes user-installed packages
 ENV PATH=/root/.local/bin:$PATH
-
-# Copy Prisma schema from project root
-COPY prisma ./prisma
-
-# Generate Prisma Client for Python
-RUN prisma generate --schema=./prisma/schema.prisma
 
 # Copy application code
 COPY services/python-api/app ./app
