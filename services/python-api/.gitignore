@@ -51,3 +51,4 @@ logs/
 # Model cache
 .cache/
 models/
+.mypy_cache/

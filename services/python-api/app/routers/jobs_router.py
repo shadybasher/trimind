@@ -81,7 +81,7 @@ async def process_ai_job_background(job_data: AIJobRequest):
         # Step 4: Save to Database
         try:
             # Lazy import to avoid Python 3.14 compatibility issues at module load time
-            from prisma import Prisma
+            from prisma import Prisma  # type: ignore[attr-defined]
 
             prisma = Prisma()
             await prisma.connect()
