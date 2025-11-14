@@ -47,14 +47,6 @@ COPY services/python-api/schema.python.prisma ./schema.prisma
 # Fetch Prisma query engine binaries for runtime (ensures binaries are present and executable)
 RUN python -m prisma py fetch
 
-# DEBUG: List downloaded binaries & permissions
-RUN echo "=== DEBUG: Binaries in /root/.cache ===" && \
-    find /root/.cache -name "*query-engine*" -type f -ls || echo "No binaries found in cache"
-
-# DEBUG: Check OpenSSL version
-RUN echo "=== DEBUG: OpenSSL version ===" && \
-    openssl version || echo "OpenSSL not found"
-
 # Copy application code
 COPY services/python-api/app ./app
 
@@ -64,6 +56,14 @@ EXPOSE 8000
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
     CMD curl -f -X GET http://localhost:8000/health || exit 1
+
+# SOTA FIX: Dynamically find the query engine binary at runtime
+# and set the ENV var that the Prisma Client respects.
+# This is resilient to version changes.
+RUN printf '#!/bin/sh\nexport PRISMA_QUERY_ENGINE_BINARY=$(find /root/.cache/prisma -name "libquery-engine" -type f | head -n 1)\nexec "$@"\n' > /usr/local/bin/prisma-env.sh && \
+    chmod +x /usr/local/bin/prisma-env.sh
+
+ENTRYPOINT ["/usr/local/bin/prisma-env.sh"]
 
 # Run application
 # Single worker to avoid Prisma Client sync issues between processes
