@@ -57,7 +57,6 @@ export async function GET(req: NextRequest) {
         role: true,
         content: true,
         createdAt: true,
-        updatedAt: true,
       },
     });
 
