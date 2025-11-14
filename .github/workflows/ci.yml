@@ -160,6 +160,13 @@ jobs:
           NODE_ENV=production
           EOF
 
+      - name: Free up disk space on runner
+        run: |
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /opt/ghc
+          sudo rm -rf /usr/local/share/boost
+          sudo docker image prune -af
+
       - name: Start Backend Services (Docker Compose)
         run: docker compose -f docker-compose.ci.yml up -d --build
         env:
