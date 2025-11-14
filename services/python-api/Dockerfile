@@ -47,6 +47,14 @@ COPY services/python-api/schema.python.prisma ./schema.prisma
 # Fetch Prisma query engine binaries for runtime (ensures binaries are present and executable)
 RUN python -m prisma py fetch
 
+# DEBUG: List downloaded binaries & permissions
+RUN echo "=== DEBUG: Binaries in /root/.cache ===" && \
+    find /root/.cache -name "*query-engine*" -type f -ls || echo "No binaries found in cache"
+
+# DEBUG: Check OpenSSL version
+RUN echo "=== DEBUG: OpenSSL version ===" && \
+    openssl version || echo "OpenSSL not found"
+
 # Copy application code
 COPY services/python-api/app ./app
 
