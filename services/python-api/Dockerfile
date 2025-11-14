@@ -19,8 +19,8 @@ RUN pip install --no-cache-dir --user -r requirements.txt
 ENV PATH=/root/.local/bin:$PATH
 
 # Copy Prisma schema and generate client in builder stage
-COPY prisma ./prisma
-RUN python -m prisma generate --schema=./prisma/schema.prisma
+COPY services/python-api/schema.python.prisma ./schema.prisma
+RUN python -m prisma generate --schema=./schema.prisma
 
 # ========================================
 # Stage 2: Runtime
@@ -42,7 +42,7 @@ COPY --from=builder /root/.local /root/.local
 ENV PATH=/root/.local/bin:$PATH
 
 # Copy Prisma schema (required by Python Prisma Client at runtime)
-COPY prisma ./prisma
+COPY services/python-api/schema.python.prisma ./schema.prisma
 
 # Copy application code
 COPY services/python-api/app ./app

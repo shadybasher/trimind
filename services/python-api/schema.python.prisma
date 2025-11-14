@@ -1,8 +1,13 @@
-// Trimind V-Next Database Schema
-// Enterprise-grade schema with full audit trails and relationships
+// Trimind V-Next Database Schema - Python API
+// This schema includes the Python generator for use in Docker builds
 
 generator client {
   provider = "prisma-client-js"
+}
+
+generator py {
+  provider             = "prisma-client-py"
+  recursive_type_depth = -1
 }
 
 datasource db {
