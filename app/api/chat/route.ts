@@ -77,7 +77,6 @@ export async function POST(req: NextRequest) {
       jobId, // Unique job ID
     });
 
-    console.log(`[Node Producer] Job ${jobId} added to queue for message ${savedMessage.id}`);
 
     // 7. Return 202 Accepted (job queued for async processing)
     return NextResponse.json(

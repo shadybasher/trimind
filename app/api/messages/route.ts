@@ -25,10 +25,7 @@ export async function GET(req: NextRequest) {
     const sessionId = req.nextUrl.searchParams.get("sessionId");
 
     if (!sessionId) {
-      return NextResponse.json(
-        { error: "sessionId query parameter is required" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "sessionId query parameter is required" }, { status: 400 });
     }
 
     // 3. Get user from database (mapped from Clerk)
@@ -46,10 +43,7 @@ export async function GET(req: NextRequest) {
     });
 
     if (!session || session.userId !== user.id) {
-      return NextResponse.json(
-        { error: "Session not found or unauthorized" },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: "Session not found or unauthorized" }, { status: 404 });
     }
 
     // 5. Fetch all messages for this session (both user and assistant messages)
@@ -67,18 +61,11 @@ export async function GET(req: NextRequest) {
       },
     });
 
-    console.log(
-      `[/api/messages] Fetched ${messages.length} messages for session ${sessionId}`
-    );
-
     // 6. Return messages array
     return NextResponse.json(messages, { status: 200 });
   } catch (error) {
     console.error("[/api/messages] Error:", error);
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
   // Note: Do NOT disconnect prisma - it is a global singleton from @/lib/prisma
 }
