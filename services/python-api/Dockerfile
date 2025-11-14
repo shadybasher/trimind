@@ -20,7 +20,7 @@ ENV PATH=/root/.local/bin:$PATH
 
 # Copy Prisma schema and generate client in builder stage
 COPY prisma ./prisma
-RUN prisma generate --schema=./prisma/schema.prisma
+RUN python -m prisma generate --schema=./prisma/schema.prisma
 
 # ========================================
 # Stage 2: Runtime
@@ -40,6 +40,9 @@ COPY --from=builder /root/.local /root/.local
 
 # Ensure PATH includes user-installed packages
 ENV PATH=/root/.local/bin:$PATH
+
+# Copy Prisma schema (required by Python Prisma Client at runtime)
+COPY prisma ./prisma
 
 # Copy application code
 COPY services/python-api/app ./app
