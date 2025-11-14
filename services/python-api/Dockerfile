@@ -44,6 +44,9 @@ ENV PATH=/root/.local/bin:$PATH
 # Copy Prisma schema (required by Python Prisma Client at runtime)
 COPY services/python-api/schema.python.prisma ./schema.prisma
 
+# Fetch Prisma query engine binaries for runtime (ensures binaries are present and executable)
+RUN python -m prisma py fetch
+
 # Copy application code
 COPY services/python-api/app ./app
 
