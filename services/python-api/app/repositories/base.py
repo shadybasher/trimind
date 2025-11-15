@@ -4,7 +4,7 @@ This module provides a generic repository pattern for all database models.
 Supports async operations with type safety.
 """
 
-from typing import Generic, TypeVar, Type, Optional, List, Any
+from typing import Generic, TypeVar, Type, Optional, List
 from sqlmodel import select, SQLModel
 from sqlmodel.ext.asyncio.session import AsyncSession
 
