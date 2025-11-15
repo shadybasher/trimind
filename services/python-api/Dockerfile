@@ -1,4 +1,9 @@
 # ========================================
+# Python API Dockerfile - SQLModel Edition
+# NO MORE PRISMA! Pure Python stack.
+# ========================================
+
+# ========================================
 # Stage 1: Builder
 # ========================================
 FROM python:3.11-slim as builder
@@ -15,13 +20,6 @@ RUN apt-get update && apt-get install -y \
 COPY services/python-api/requirements.txt .
 RUN pip install --no-cache-dir --user -r requirements.txt
 
-# Ensure PATH includes user-installed packages for builder stage
-ENV PATH=/root/.local/bin:$PATH
-
-# Copy Prisma schema and generate client in builder stage
-COPY services/python-api/schema.python.prisma ./schema.prisma
-RUN python -m prisma generate --schema=./schema.prisma
-
 # ========================================
 # Stage 2: Runtime
 # ========================================
@@ -32,7 +30,6 @@ WORKDIR /app
 # Install runtime dependencies only
 RUN apt-get update && apt-get install -y \
     curl \
-    libatomic1 \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy installed packages from builder
@@ -40,12 +37,6 @@ COPY --from=builder /root/.local /root/.local
 
 # Ensure PATH includes user-installed packages
 ENV PATH=/root/.local/bin:$PATH
-
-# Copy Prisma schema (required by Python Prisma Client at runtime)
-COPY services/python-api/schema.python.prisma ./schema.prisma
-
-# Fetch Prisma query engine binaries for runtime (ensures binaries are present and executable)
-RUN python -m prisma py fetch
 
 # Copy application code
 COPY services/python-api/app ./app
@@ -57,14 +48,6 @@ EXPOSE 8000
 HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
     CMD curl -f -X GET http://localhost:8000/health || exit 1
 
-# SOTA FIX: Dynamically find the query engine binary at runtime
-# and set the ENV var that the Prisma Client respects.
-# This is resilient to version changes.
-RUN printf '#!/bin/sh\nexport PRISMA_QUERY_ENGINE_BINARY=$(find /root/.cache/prisma -name "libquery-engine" -type f | head -n 1)\nexec "$@"\n' > /usr/local/bin/prisma-env.sh && \
-    chmod +x /usr/local/bin/prisma-env.sh
-
-ENTRYPOINT ["/usr/local/bin/prisma-env.sh"]
-
 # Run application
-# Single worker to avoid Prisma Client sync issues between processes
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "1"]
+# Using single worker for now (RC#15 async startup with multiple workers needs investigation)
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]

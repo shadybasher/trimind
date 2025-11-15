@@ -55,13 +55,17 @@ services:
     container_name: trimind-python-api
     restart: unless-stopped
     environment:
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-trimind}:${POSTGRES_PASSWORD:-trimind_password}@postgres:5432/${POSTGRES_DB:-trimind}
       - SHARED_SECRET=${SHARED_SECRET}
       - OPENAI_API_KEY=${OPENAI_API_KEY}
       - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - GOOGLE_API_KEY=${GOOGLE_API_KEY}
       - DEBUG=${DEBUG:-false}
     ports:
       - "${PYTHON_API_PORT:-8000}:8000"
     depends_on:
+      postgres:
+        condition: service_healthy
       redis:
         condition: service_healthy
     healthcheck:
@@ -69,7 +73,7 @@ services:
       interval: 30s
       timeout: 10s
       retries: 3
-      start_period: 40s
+      start_period: 120s
     networks:
       - trimind-network
 

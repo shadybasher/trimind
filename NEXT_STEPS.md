@@ -25,7 +25,7 @@
 אז הרץ:
 
 ```bash
-cd c:\2025\trimind-v-next
+cd D:\trimind-v-next
 
 # החלף USERNAME בשם המשתמש שלך ב-GitHub
 git remote add origin https://github.com/USERNAME/trimind-v-next.git

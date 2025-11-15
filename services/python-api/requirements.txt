@@ -14,8 +14,15 @@ litellm==1.58.4
 # Resilience
 circuitbreaker==2.0.0
 
-# Database
-prisma==0.15.0
+# Database - SQLModel Stack (replaces Prisma)
+sqlmodel==0.0.22
+asyncpg==0.30.0
+alembic==1.15.0
+
+# LLM Providers
+openai==1.59.5
+anthropic==0.42.0
+google-generativeai==0.8.3
 
 # Testing
 pytest==8.3.4

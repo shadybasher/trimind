@@ -1,12 +1,17 @@
-"""Jobs Router for processing AI tasks from BullMQ Proxy."""
+"""Jobs Router for processing AI tasks from BullMQ Proxy - SQLModel Edition."""
 
-import litellm
 from fastapi import APIRouter, BackgroundTasks, Depends
 from pydantic import BaseModel, Field
 from app.dependencies import verify_shared_secret
 from app.routers.intent_router import classify_with_primary
 from app.models import LLMLinguaModel
+from app.database import async_engine
+from app.repositories.message import MessageRepository
+from app.services.llm_router import LLMRouter, ProviderEnum
+from sqlmodel.ext.asyncio.session import AsyncSession
+import logging
 
+logger = logging.getLogger(__name__)
 router = APIRouter()
 
 
@@ -32,29 +37,33 @@ class AIJobResponse(BaseModel):
 
 async def process_ai_job_background(job_data: AIJobRequest):
     """
-    Background task to process AI job.
+    Background task to process AI job - SQLModel Edition.
 
     This function runs asynchronously after the webhook returns 200 OK.
 
     Flow:
     1. Run intent classification (NLU)
-    2. Compress prompt if needed
-    3. Route to appropriate LLM
-    4. Save AI response to database
+    2. Compress prompt if needed (optional)
+    3. Route to appropriate LLM provider
+    4. Save AI response to database (SQLModel + AsyncSession)
 
     Args:
         job_data: AI job data from BullMQ
+
+    Note:
+        This is the CRITICAL function that was failing with Prisma SIGSEGV.
+        Now uses SQLModel with async support - NO BINARY DEPENDENCIES.
     """
-    print(f"[Background Task] Processing AI job for message {job_data.messageId}")
+    logger.info(f"[Background Task] Processing AI job for message {job_data.messageId}")
 
     try:
         # Step 1: Intent Classification
         intent_result = await classify_with_primary(job_data.message)
-        print(
+        logger.info(
             f"  Intent: {intent_result['intent']}, Target Model: {intent_result['target_model']}"
         )
 
-        # Step 2: Prompt Compression (if message > 500 chars)
+        # Step 2: Prompt Compression (if message > 500 chars) - OPTIONAL
         prompt = job_data.message
         if len(prompt) > 500:
             try:
@@ -63,50 +72,49 @@ async def process_ai_job_background(job_data: AIJobRequest):
                     [prompt], rate=0.5, force_tokens=[]
                 )
                 prompt = compressed_result["compressed_prompt"]
-                print(f"  Compressed: {len(job_data.message)} -> {len(prompt)} chars")
+                logger.info(f"  Compressed: {len(job_data.message)} -> {len(prompt)} chars")
             except Exception as e:
-                print(f"  Compression failed (using original): {str(e)}")
+                logger.warning(f"  Compression failed (using original): {str(e)}")
 
-        # Step 3: LLM Routing & Execution
-        llm_response = await litellm.acompletion(
-            model=intent_result["target_model"],
+        # Step 3: LLM Routing & Execution - NEW MULTI-PROVIDER ROUTER
+        llm_router = LLMRouter()
+
+        # Determine provider from intent or use default (Google Gemini)
+        provider = llm_router.select_provider(intent=intent_result.get("intent"))
+
+        llm_response = await llm_router.route(
+            provider=provider.value,
             messages=[{"role": "user", "content": prompt}],
             temperature=0.7,
             max_tokens=1000,
         )
 
-        ai_message = llm_response.choices[0].message.content
-        print(f"  AI Response: {ai_message[:50]}...")
+        ai_message = llm_response["content"]
+        logger.info(
+            f"  AI Response from {llm_response['provider']}/{llm_response['model']}: {ai_message[:50]}..."
+        )
 
-        # Step 4: Save to Database
-        try:
-            # Lazy import to avoid Python 3.14 compatibility issues at module load time
-            from prisma import Prisma  # type: ignore[attr-defined]
+        # Step 4: Save to Database - SQLModel + AsyncSession (NO MORE PRISMA!)
+        async with AsyncSession(async_engine, expire_on_commit=False) as session:
+            message_repo = MessageRepository(session)
 
-            prisma = Prisma()
-            await prisma.connect()
-            try:
-                # Create AI message with auto-generated CUID (do NOT use job_data.messageId - that's the user message ID!)
-                ai_message_record = await prisma.message.create(
-                    data={
-                        "sessionId": job_data.sessionId,
-                        "userId": job_data.userId,
-                        "role": "assistant",
-                        "content": ai_message,
-                    }
-                )
-                print(
-                    f"  ✓ Saved to database: AI message {ai_message_record.id} (for user message {job_data.messageId})"
-                )
-            finally:
-                await prisma.disconnect()
-        except ImportError as e:
-            print(
-                f"  ⚠ Prisma client not available (Python 3.14 compatibility): {str(e)}"
+            # Create AI message with auto-generated CUID
+            ai_message_record = await message_repo.create_with_provider(
+                session_id=job_data.sessionId,
+                user_id=job_data.userId,
+                role="assistant",
+                content=ai_message,
+                provider=llm_response["provider"],
+                model=llm_response["model"],
             )
 
+            logger.info(
+                f"  ✓ Saved to database: AI message {ai_message_record.id} (for user message {job_data.messageId})"
+            )
+            logger.info(f"  ✓ Provider: {ai_message_record.provider}, Model: {ai_message_record.model}")
+
     except Exception as e:
-        print(f"  ✗ Error processing job: {str(e)}")
+        logger.error(f"  ✗ Error processing job: {str(e)}", exc_info=True)
 
 
 @router.post(
