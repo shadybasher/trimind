@@ -7,7 +7,7 @@ from app.routers.intent_router import classify_with_primary
 from app.models import LLMLinguaModel
 from app.database import async_engine
 from app.repositories.message import MessageRepository
-from app.services.llm_router import LLMRouter, ProviderEnum
+from app.services.llm_router import LLMRouter
 from sqlmodel.ext.asyncio.session import AsyncSession
 import logging
 

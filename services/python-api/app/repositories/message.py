@@ -6,7 +6,7 @@ This module provides message-specific database operations.
 from typing import List, Optional
 from sqlmodel import select
 from sqlmodel.ext.asyncio.session import AsyncSession
-from app.db_models import Message, RoleEnum, ProviderEnum
+from app.db_models import Message, RoleEnum
 from app.repositories.base import BaseRepository
 
 

@@ -8,10 +8,9 @@ This module provides:
 
 from typing import AsyncGenerator
 import os
-from sqlmodel import SQLModel, create_engine
+from sqlmodel import SQLModel
 from sqlmodel.ext.asyncio.session import AsyncSession
 from sqlalchemy.ext.asyncio import AsyncEngine, create_async_engine
-from sqlalchemy.pool import NullPool
 import logging
 
 logger = logging.getLogger(__name__)
