@@ -1,6 +1,7 @@
 """Jobs Router for processing AI tasks from BullMQ Proxy - SQLModel Edition."""
 
 from fastapi import APIRouter, BackgroundTasks, Depends
+from typing import Dict, Any
 from pydantic import BaseModel, Field
 from app.dependencies import verify_shared_secret
 from app.routers.intent_router import classify_with_primary
@@ -84,7 +85,7 @@ async def process_ai_job_background(job_data: AIJobRequest):
         # Determine provider from intent or use default (Google Gemini)
         provider = llm_router.select_provider(intent=intent_result.get("intent"))
 
-        llm_response = await llm_router.route(
+        llm_response: Dict[str, Any] = await llm_router.route(
             provider=provider.value,
             messages=[{"role": "user", "content": prompt}],
             temperature=0.7,

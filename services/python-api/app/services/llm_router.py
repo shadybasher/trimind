@@ -4,7 +4,7 @@ This module routes requests to appropriate LLM providers based on configuration.
 Supports all three major providers with unified interface.
 """
 
-from typing import Dict, Optional, List
+from typing import Dict, Optional, List, Any
 from enum import Enum
 import os
 import logging
@@ -79,7 +79,7 @@ class LLMRouter:
         temperature: float = 0.7,
         max_tokens: int = 1000,
         **kwargs,
-    ) -> Dict[str, any]:
+    ) -> Dict[str, Any]:
         """
         Route request to appropriate LLM provider.
 

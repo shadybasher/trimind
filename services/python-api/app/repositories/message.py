@@ -4,7 +4,7 @@ This module provides message-specific database operations.
 """
 
 from typing import List, Optional
-from sqlmodel import select
+from sqlmodel import select, col
 from sqlmodel.ext.asyncio.session import AsyncSession
 from app.db_models import Message, RoleEnum
 from app.repositories.base import BaseRepository
@@ -31,7 +31,7 @@ class MessageRepository(BaseRepository[Message]):
         result = await self.session.execute(
             select(Message)
             .where(Message.sessionId == session_id)
-            .order_by(Message.createdAt)
+            .order_by(col(Message.createdAt))
             .limit(limit)
         )
         return list(result.scalars().all())
@@ -52,7 +52,7 @@ class MessageRepository(BaseRepository[Message]):
         result = await self.session.execute(
             select(Message)
             .where(Message.sessionId == session_id)
-            .order_by(Message.createdAt.desc())
+            .order_by(col(Message.createdAt).desc())
             .limit(count)
         )
         # Reverse to get chronological order
@@ -104,7 +104,7 @@ class MessageRepository(BaseRepository[Message]):
         result = await self.session.execute(
             select(Message)
             .where(Message.sessionId == session_id, Message.role == RoleEnum.USER.value)
-            .order_by(Message.createdAt)
+            .order_by(col(Message.createdAt))
         )
         return list(result.scalars().all())
 
@@ -124,7 +124,7 @@ class MessageRepository(BaseRepository[Message]):
                 Message.sessionId == session_id,
                 Message.role == RoleEnum.ASSISTANT.value,
             )
-            .order_by(Message.createdAt)
+            .order_by(col(Message.createdAt))
         )
         return list(result.scalars().all())
 
@@ -157,7 +157,7 @@ class MessageRepository(BaseRepository[Message]):
         result = await self.session.execute(
             select(Message)
             .where(Message.provider == provider)
-            .order_by(Message.createdAt.desc())
+            .order_by(col(Message.createdAt).desc())
             .limit(limit)
         )
         return list(result.scalars().all())

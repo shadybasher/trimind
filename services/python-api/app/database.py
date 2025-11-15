@@ -6,7 +6,7 @@ This module provides:
 - Table creation utilities
 """
 
-from typing import AsyncGenerator
+from typing import AsyncGenerator, Any
 import os
 from sqlmodel import SQLModel
 from sqlmodel.ext.asyncio.session import AsyncSession
@@ -127,7 +127,7 @@ async def close_db() -> None:
 # ========================================
 
 
-def get_pool_status() -> dict:
+def get_pool_status() -> dict[str, Any]:
     """
     Get current connection pool status for monitoring.
 
@@ -136,8 +136,8 @@ def get_pool_status() -> dict:
     """
     pool = async_engine.pool
     return {
-        "pool_size": pool.size(),
-        "checked_out": pool.checkedout(),
-        "overflow": pool.overflow(),
-        "total_connections": pool.size() + pool.overflow(),
+        "pool_size": pool.size(),  # type: ignore[attr-defined]
+        "checked_out": pool.checkedout(),  # type: ignore[attr-defined]
+        "overflow": pool.overflow(),  # type: ignore[attr-defined]
+        "total_connections": pool.size() + pool.overflow(),  # type: ignore[attr-defined]
     }

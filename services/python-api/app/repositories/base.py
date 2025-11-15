@@ -4,12 +4,12 @@ This module provides a generic repository pattern for all database models.
 Supports async operations with type safety.
 """
 
-from typing import Generic, TypeVar, Type, Optional, List
-from sqlmodel import select
+from typing import Generic, TypeVar, Type, Optional, List, Any
+from sqlmodel import select, SQLModel
 from sqlmodel.ext.asyncio.session import AsyncSession
 
-# Generic type for SQLModel models
-T = TypeVar("T")
+# Generic type for SQLModel models - bound to SQLModel to ensure it has required attributes
+T = TypeVar("T", bound=SQLModel)
 
 
 class BaseRepository(Generic[T]):
@@ -65,7 +65,7 @@ class BaseRepository(Generic[T]):
             Model instance or None if not found
         """
         result = await self.session.execute(
-            select(self.model).where(self.model.id == id)
+            select(self.model).where(self.model.id == id)  # type: ignore[attr-defined]
         )
         return result.scalar_one_or_none()
 
