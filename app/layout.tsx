@@ -20,6 +20,9 @@ export const metadata: Metadata = {
   description: "AI-powered conversation platform with Google-level quality standards",
 };
 
+// Force dynamic rendering to avoid build-time dependency on Clerk keys
+export const dynamic = 'force-dynamic';
+
 export default function RootLayout({
   children,
 }: Readonly<{

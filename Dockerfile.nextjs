@@ -1,0 +1,108 @@
+# ========================================
+# Next.js Production Dockerfile
+# Multi-stage build: dependencies -> builder -> runner
+# ========================================
+
+# ========================================
+# Stage 1: Dependencies
+# Install all dependencies (including devDependencies)
+# ========================================
+FROM node:20-alpine AS deps
+WORKDIR /app
+
+# Install dependencies only when needed
+# Copy package files
+COPY package.json package-lock.json ./
+
+# Copy Prisma schema (required for postinstall prisma generate)
+COPY prisma ./prisma
+
+# Set placeholder DATABASE_URL for Prisma generate (not used, just required)
+ENV DATABASE_URL="postgresql://placeholder:placeholder@placeholder:5432/placeholder"
+
+# Install all dependencies (needed for build)
+RUN npm ci
+
+# ========================================
+# Stage 2: Builder
+# Build the Next.js application
+# ========================================
+FROM node:20-alpine AS builder
+WORKDIR /app
+
+# Copy dependencies from deps stage
+COPY --from=deps /app/node_modules ./node_modules
+
+# Copy application source
+COPY . .
+
+# Generate Prisma Client (required for build)
+RUN npx prisma generate
+
+# Set Next.js to produce standalone output
+# This reduces image size by ~80% by only including necessary files
+ENV NEXT_TELEMETRY_DISABLED=1
+ENV NODE_ENV=production
+
+# Build Next.js application
+# NEXT_PUBLIC_* environment variables must be set at build time
+# Use build args if provided, otherwise use placeholder values (overridden at runtime)
+ARG NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_placeholder_for_build
+ARG NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in
+ARG NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up
+ARG NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL=/dashboard
+ARG NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL=/dashboard
+
+ENV NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=$NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
+ENV NEXT_PUBLIC_CLERK_SIGN_IN_URL=$NEXT_PUBLIC_CLERK_SIGN_IN_URL
+ENV NEXT_PUBLIC_CLERK_SIGN_UP_URL=$NEXT_PUBLIC_CLERK_SIGN_UP_URL
+ENV NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL=$NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL
+ENV NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL=$NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL
+
+RUN npm run build
+
+# ========================================
+# Stage 3: Runner (Production)
+# Minimal production image with only runtime dependencies
+# ========================================
+FROM node:20-alpine AS runner
+WORKDIR /app
+
+# Set production environment
+ENV NODE_ENV=production
+ENV NEXT_TELEMETRY_DISABLED=1
+
+# Create non-root user for security
+RUN addgroup --system --gid 1001 nodejs && \
+    adduser --system --uid 1001 nextjs
+
+# Copy Prisma schema and generated client (required at runtime)
+COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
+COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
+COPY --from=builder /app/prisma ./prisma
+
+# Copy Next.js standalone build output
+# Next.js standalone mode automatically creates a minimal production bundle
+COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+COPY --from=builder --chown=nextjs:nodejs /app/public ./public
+
+# Copy package.json for runtime metadata
+COPY --from=builder /app/package.json ./package.json
+
+# Switch to non-root user
+USER nextjs
+
+# Expose port 3000
+EXPOSE 3000
+
+# Set port for Next.js standalone server
+ENV PORT=3000
+ENV HOSTNAME="0.0.0.0"
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
+    CMD node -e "require('http').get('http://localhost:3000/api/health', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"
+
+# Start Next.js standalone server
+CMD ["node", "server.js"]
