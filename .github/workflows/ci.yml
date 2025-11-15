@@ -113,6 +113,7 @@ jobs:
           pytest tests/ -v
         continue-on-error: false
         env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
           SHARED_SECRET: ${{ secrets.SHARED_SECRET }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
