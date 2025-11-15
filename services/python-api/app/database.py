@@ -61,6 +61,7 @@ logger.info("Async database engine initialized with connection pooling")
 # Session Factory (FastAPI Dependency)
 # ========================================
 
+
 async def get_session() -> AsyncGenerator[AsyncSession, None]:
     """
     FastAPI dependency to provide database sessions.
@@ -88,6 +89,7 @@ async def get_session() -> AsyncGenerator[AsyncSession, None]:
 # ========================================
 # Database Initialization
 # ========================================
+
 
 async def init_db() -> None:
     """
@@ -123,6 +125,7 @@ async def close_db() -> None:
 # ========================================
 # Connection Pool Monitoring (Optional)
 # ========================================
+
 
 def get_pool_status() -> dict:
     """

@@ -30,7 +30,9 @@ async def load_models_background(app: FastAPI):
     from server initialization.
     """
     try:
-        logger.info(f"[Background] Loading LLMLingua-2 model: {settings.llmlingua_model_name}")
+        logger.info(
+            f"[Background] Loading LLMLingua-2 model: {settings.llmlingua_model_name}"
+        )
         LLMLinguaModel.get_instance()
         logger.info("✓ Model loaded successfully")
 

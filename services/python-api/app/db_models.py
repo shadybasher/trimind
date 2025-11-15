@@ -88,8 +88,13 @@ class Message(SQLModel, table=True):
     content: str = Field(description="Message content")
 
     # LLM Metadata (for assistant messages)
-    provider: Optional[str] = Field(default=None, description="LLM provider (openai/anthropic/google)")
-    model: Optional[str] = Field(default=None, description="Model used (gpt-4o/claude-3-7-sonnet/gemini-2.0-flash)")
+    provider: Optional[str] = Field(
+        default=None, description="LLM provider (openai/anthropic/google)"
+    )
+    model: Optional[str] = Field(
+        default=None,
+        description="Model used (gpt-4o/claude-3-7-sonnet/gemini-2.0-flash)",
+    )
 
     createdAt: datetime = Field(default_factory=datetime.utcnow, index=True)
 

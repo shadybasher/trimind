@@ -36,7 +36,9 @@ class MessageRepository(BaseRepository[Message]):
         )
         return list(result.scalars().all())
 
-    async def get_latest_by_session(self, session_id: str, count: int = 10) -> List[Message]:
+    async def get_latest_by_session(
+        self, session_id: str, count: int = 10
+    ) -> List[Message]:
         """
         Get latest N messages for a session.
 
@@ -118,7 +120,10 @@ class MessageRepository(BaseRepository[Message]):
         """
         result = await self.session.execute(
             select(Message)
-            .where(Message.sessionId == session_id, Message.role == RoleEnum.ASSISTANT.value)
+            .where(
+                Message.sessionId == session_id,
+                Message.role == RoleEnum.ASSISTANT.value,
+            )
             .order_by(Message.createdAt)
         )
         return list(result.scalars().all())

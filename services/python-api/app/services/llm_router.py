@@ -105,11 +105,17 @@ class LLMRouter:
         provider_enum = ProviderEnum(provider.lower())
 
         if provider_enum == ProviderEnum.OPENAI:
-            return await self._call_openai(messages, model, temperature, max_tokens, **kwargs)
+            return await self._call_openai(
+                messages, model, temperature, max_tokens, **kwargs
+            )
         elif provider_enum == ProviderEnum.ANTHROPIC:
-            return await self._call_anthropic(messages, model, temperature, max_tokens, **kwargs)
+            return await self._call_anthropic(
+                messages, model, temperature, max_tokens, **kwargs
+            )
         elif provider_enum == ProviderEnum.GOOGLE:
-            return await self._call_gemini(messages, model, temperature, max_tokens, **kwargs)
+            return await self._call_gemini(
+                messages, model, temperature, max_tokens, **kwargs
+            )
         else:
             raise ValueError(f"Unsupported provider: {provider}")
 
@@ -193,7 +199,9 @@ class LLMRouter:
             Exception: If API call fails
         """
         if not self.anthropic_client:
-            raise ValueError("Anthropic client not initialized - check ANTHROPIC_API_KEY")
+            raise ValueError(
+                "Anthropic client not initialized - check ANTHROPIC_API_KEY"
+            )
 
         model = model or "claude-3-7-sonnet-20250219"
         logger.info(f"Calling Anthropic {model}")
@@ -306,7 +314,9 @@ class LLMRouter:
             try:
                 return ProviderEnum(user_preference.lower())
             except ValueError:
-                logger.warning(f"Invalid user preference: {user_preference}, using default")
+                logger.warning(
+                    f"Invalid user preference: {user_preference}, using default"
+                )
 
         # Intent-based routing
         if intent:

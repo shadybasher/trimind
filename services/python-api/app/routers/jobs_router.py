@@ -72,7 +72,9 @@ async def process_ai_job_background(job_data: AIJobRequest):
                     [prompt], rate=0.5, force_tokens=[]
                 )
                 prompt = compressed_result["compressed_prompt"]
-                logger.info(f"  Compressed: {len(job_data.message)} -> {len(prompt)} chars")
+                logger.info(
+                    f"  Compressed: {len(job_data.message)} -> {len(prompt)} chars"
+                )
             except Exception as e:
                 logger.warning(f"  Compression failed (using original): {str(e)}")
 
@@ -111,7 +113,9 @@ async def process_ai_job_background(job_data: AIJobRequest):
             logger.info(
                 f"  ✓ Saved to database: AI message {ai_message_record.id} (for user message {job_data.messageId})"
             )
-            logger.info(f"  ✓ Provider: {ai_message_record.provider}, Model: {ai_message_record.model}")
+            logger.info(
+                f"  ✓ Provider: {ai_message_record.provider}, Model: {ai_message_record.model}"
+            )
 
     except Exception as e:
         logger.error(f"  ✗ Error processing job: {str(e)}", exc_info=True)
