@@ -21,7 +21,7 @@ export const metadata: Metadata = {
 };
 
 // Force dynamic rendering to avoid build-time dependency on Clerk keys
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
 export default function RootLayout({
   children,
